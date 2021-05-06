@@ -1,0 +1,430 @@
+const { body, validationResult } = require("express-validator");
+const { sanitizeBody } = require("express-validator/filter");
+const Admin = require("../schema/adminmodel");
+const User = require("../schema/usermodal");
+const Order = require("../schema/ordermodel");
+const Privacy = require('../schema/privacypolicy');
+const Temrs = require('../schema/termsandcondition');
+const Aboutus = require('../schema/aboutus');
+const Howisitwork = require('../schema/Howisitwork');
+const Notification = require('../schema/notification');
+
+exports.createAdminUser = [
+  sanitizeBody("userName"),
+  sanitizeBody("email"),
+  sanitizeBody("phone"),
+  sanitizeBody("password"),
+  async (req, res) => {
+    const admin = new Admin({
+      userName: req.body.userName,
+      email: req.body.email,
+      phone: req.body.phone,
+      password: req.body.password
+    });
+
+    try {
+      let data = await admin.save();
+      res.status(200).json({
+        status: true,
+        data,
+        message: "Admin created successfully"
+      });
+    } catch (err) {
+      res.status(409).json({
+        status: false,
+        message: "Email or Mobile number already exsist"
+      });
+    }
+  }
+];
+
+exports.login = [
+  sanitizeBody("email"),
+  sanitizeBody("phone"),
+  sanitizeBody("password"),
+  async (req, res) => {
+    try {
+      const data = await Admin.findOne({
+        $and: [
+          { password: req.body.password },
+          { $or: [{ email: req.body.email }, { phone: req.body.phone }] }
+        ]
+      }).select("-password");
+      if (data) {
+        delete data.password;
+        console.log("admin login data===> ", typeof data);
+        res.status(200).json({
+          status: true,
+          message: "admin login successfully",
+          data
+        });
+      } else {
+        res.status(500).json({
+          status: false,
+          message: "Invalid username or password"
+        });
+      }
+    } catch (err) {
+      res.status(410).json({
+        status: false,
+        message: "Invalid username or password"
+      });
+    }
+  }
+];
+
+exports.getAllUserList = [
+  sanitizeBody("adminId"),
+  sanitizeBody("email"),
+  sanitizeBody("mobileNumber"),
+  async (req, res) => {
+    try {
+      let users = [],
+        user;
+      if (req.body.email || req.body.phone) {
+        user = await User.findOne({
+          $or: [{ phone: req.body.phone }, { email: req.body.email }]
+        });
+      } else {
+        users = await User.find({});
+      }
+      if (user || users) {
+        res.status(200).json({
+          status: true,
+          message: "All User list populated successfully",
+          users,
+          user
+        });
+      } else {
+        res.status(204).json({
+          status: true,
+          message: "All User not avilable"
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        status: true,
+        message: "Some thing went wrong."
+      });
+    }
+  }
+];
+
+exports.updateUserStatus = [
+  sanitizeBody("adminId"),
+  sanitizeBody("userId"),
+  sanitizeBody("userStatus"),
+  async (req, res) => {
+    try {
+      let status = { userStatus: req.body.userStatus };
+      let updateStatus = await User.findOneAndUpdate(
+        { _id: req.body.userId },
+        { $set: status },
+        { new: true }
+      );
+      if (updateStatus) {
+        res.status(200).json({
+          status: true,
+          message: "User status updated successfully"
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "User status not updated successfully"
+        });
+      }
+    } catch (err) {
+      console.log("error ", err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
+];
+
+exports.getOrderList = [
+  sanitizeBody("adminId"),
+  async (req, res) => {
+    try {
+      let data = await Order.find({})
+        .populate("userId")
+        .populate("vechicleId")
+        .populate("chargingPointId")
+        .populate({path:'vechicleId', populate:{path: 'category'}})
+        .populate({path:'vechicleId', populate:{path: 'subCategory'}})
+        .populate({path:'vechicleId', populate:{path: 'userId'}})
+        .exec();
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "All orders listed successfully",
+          order: data
+        });
+      } else {
+        res.json(200).json({
+          status: false,
+          message: "Order list empty"
+        });
+      }
+    } catch (err) {
+      res.json(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];
+
+exports.updateOrder = [
+  sanitizeBody("adminId"),
+  sanitizeBody("orderId"),
+  sanitizeBody("status"),
+  async (req, res) => {
+    try {
+      let updateValue = {
+        status: req.body.status
+      };
+      let data = await Order.findOneAndUpdate(
+        { _id: req.body.orderId },
+        { $set: updateValue },
+        { new: true }
+      );
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "Order updated successfully",        
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: "Order not updated successfully"
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "something went wrong"
+      });
+    }
+  }
+];
+
+exports.addStaticPage = [
+async(req, res) => {
+  try{
+    let privacy = new Privacy({
+      version: req.body.version,
+      content: req.body.content,    
+    });
+    let data = await privacy.save();
+    if(data){
+      res.status(200).json({
+        status: true,
+        message: 'Privcy policy inserted successfully',
+        privacyPolicy: data,
+      });
+    }else {
+      res.status(200).json({
+        status: false,
+        message: 'Privcy policy not inserted successfully',
+      });
+    }
+  }catch(err){
+    res.status(500).json({
+      status: false,
+      message: 'Something went wrong',
+    });
+  }
+}
+];
+
+exports.addTermsAndCondition = [
+  async (req, res) => {
+    try {
+      let terms = new Temrs({
+        version: req.body.version,
+        content: req.body.content
+      });
+      let data = await terms.save();
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "Terms and condition inserted successfully",
+          privacyPolicy: data
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: "Terms and condition not inserted successfully"
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];
+
+exports.addAboutUs = [
+  async (req, res) => {
+    try {
+      let aboutus = new Aboutus({
+        version: req.body.version,
+        content: req.body.content
+      });
+      let data = await aboutus.save();
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "About us inserted successfully",
+          privacyPolicy: data
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: "About us not inserted successfully"
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];
+
+exports.howisitwork = [
+  async(req, res) => {
+    try {
+      let howisItWork = new Howisitwork({
+        version: req.body.version,
+        content: req.body.content
+      });
+      let data = await howisItWork.save();
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "How is work added sucessfully",
+          howIsItWork: data
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: "About us not inserted successfully"
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+]
+
+exports.getStaticPage = [
+  async (req, res) => {
+    let types = req.body.type;
+    switch (req.body.type) {
+      case "PRIVACY":
+        try {
+          let data = await Privacy.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "Privacy policy listed sucessfully",
+            privacyPolicy: data
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+      case "ABOUT":
+        try {
+          let data = await Aboutus.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "About us listed sucessfully",
+            Aboutus: data
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+      case "TERMS":
+        try {
+          let data = await Temrs.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "Terms listed sucessfully",
+            terms: data
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+
+      case "HOWISITWORK":
+        try {
+          let data = await Howisitwork.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "How is it work listed sucessfully",
+            terms: data
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+      default:
+        try {
+          let data = await Privacy.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "Privacy policy listed sucessfully",
+            privacyPolicy: data
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+    }
+  }
+];
+
+exports.addNotification = [
+  sanitizeBody('title'),
+  sanitizeBody('message'),
+  sanitizeBody('createdDate'),
+  async(req, res) => {
+    const notification = new Notification({
+      title: req.body.title,
+      message: req.body.message,
+      createdDate: req.body.createdDate,
+    });
+    try {
+      let data = await notification.save();
+      if(data){
+        res.status(200).json({
+          status: true,
+          message: 'Notification Created Successfully',
+          notification: data,
+        });
+      }else {
+        res.status(200).json({
+          status: false,
+          message: 'Notification not Created Successfully',
+        });
+      }
+    } catch (err) {
+      console.log('err=======> ',err)
+      res.status(500).json({
+        status: false,
+        message: 'Something went wrong',
+      });
+    }  
+  }
+]

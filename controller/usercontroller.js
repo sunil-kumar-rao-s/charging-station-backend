@@ -1,0 +1,396 @@
+const { body, validationResult } = require("express-validator");
+const { sanitizeBody } = require("express-validator/filter");
+const User = require("../schema/usermodal");
+const Payment = require("../schema/payment");
+const Razorpay = require("razorpay");
+const Privacy = require("../schema/privacypolicy");
+const Temrs = require("../schema/termsandcondition");
+const Aboutus = require("../schema/aboutus");
+const jwt = require("jsonwebtoken");
+const Howisitwork = require("../schema/Howisitwork");
+const Notification = require("../schema/notification");
+
+var instance = new Razorpay({
+  key_id: "rzp_test_6E8SjivqQhV3be",
+  key_secret: "eiI39u9wq0z1PgCDnWEFwJr4"
+});
+
+exports.createUser = [
+  sanitizeBody("userName").trim(),
+  sanitizeBody("email").trim(),
+  sanitizeBody("phone").trim(),
+  sanitizeBody("city").trim(),
+  sanitizeBody("password").trim(),
+  async (req, res) => {
+    try {
+      let mobileNumberData = await User.findOne({
+        $or: [{ phone: req.body.phone, email: req.body.email }]
+      });
+      if (mobileNumberData) {
+        res.status(409).json({
+          status: false,
+          message: "Email or Mobilenumber already exsist"
+        });
+      } else {
+        const user = new User({
+          userName: req.body.userName,
+          email: req.body.email,
+          phone: req.body.phone,
+          city: req.body.city,
+          password: req.body.password
+        });
+        try {
+          const data = await user.save();
+          res.status(200).json({
+            status: true,
+            data
+          });
+        } catch (err) {
+          res.status(200).json({
+            status: false,
+            message: "Email or mobile number already exsist"
+          });
+        }
+      }
+    } catch (err) {
+      res.status(200).json({
+        status: false,
+        message: "Email or mobile number already exsist"
+      });
+    }
+  }
+];
+
+exports.login = [
+  sanitizeBody("email").trim(),
+  sanitizeBody("phone").trim(),
+  sanitizeBody("password").trim(),
+  async (req, res) => {
+    try {
+      let data = await User.findOne({
+        $and: [
+          { password: req.body.password },
+          { $or: [{ phone: req.body.phone }, { email: req.body.email }] }
+        ]
+      }).select("-password");
+      if (data) {
+        let lastDate = Date.now();
+        let lastloginDate = { lastActiveAt: lastDate };
+        let updateData = await User.findOneAndUpdate(
+          { _id: data._id },
+          { $set: lastloginDate },
+          { new: true }
+        );
+        const jwtToken = jwt.sign({ email: req.body.email }, "accessToken");
+        console.log("accessToekn=====> ", jwtToken);
+        data.lastActiveAt = lastDate;
+        res.status(200).json({
+          status: true,
+          data: data
+        });
+      } else {
+        res.status(410).json({
+          status: false,
+          message: "invalid username or password"
+        });
+      }
+    } catch (err) {
+      res.status(410).json({
+        status: false,
+        message: "invalid username or password"
+      });
+    }
+  }
+];
+
+exports.getProfile = async (req, res) => {
+  try {
+    console.log("view profile called");
+    let data = await User.findOne({ _id: req.query.id }).select("-password");
+    res.status(200).json({
+      status: true,
+      profileData: data
+    });
+  } catch (err) {
+    res.status(401).json({
+      status: false,
+      message: "Profile Details not found"
+    });
+  }
+};
+
+exports.updateProfile = [
+  sanitizeBody("id").trim(),
+  sanitizeBody("userName").trim(),
+  sanitizeBody("email").trim(),
+  sanitizeBody("phone").trim(),
+  sanitizeBody("city").trim(),
+  async (req, res) => {
+    console.log("update profile called");
+    let updateValue = {
+      userName: req.body.userName,
+      email: req.body.email,
+      phone: req.body.phone,
+      city: req.body.city
+    };
+    try {
+      let data = await User.findOneAndUpdate(
+        { _id: req.body.id },
+        { $set: updateValue },
+        { new: true }
+      ).select("-password");
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "Profile updated successfully",
+          data
+        });
+      } else {
+        res.status(401).json({
+          status: true,
+          message: "request user not found",
+          data
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message:
+          "Email or mobile number already exsist with another user"
+      });
+    }
+  }
+];
+
+exports.updatePassword = [
+  sanitizeBody("id").trim(),
+  sanitizeBody("oldPassword").trim(),
+  sanitizeBody("newPassword").trim(),
+  async (req, res) => {
+    try {
+      let data = await User.findOne({
+        _id: req.body.id,
+        password: req.body.oldPassword
+      });
+      if (data) {
+        let newData = await User.updateOne(
+          { _id: req.body.id },
+          { $set: { password: req.body.newPassword } },
+          { new: true }
+        );
+        if (newData) {
+          res.status(200).json({
+            status: true,
+            message: "password updated successfully"
+          });
+        } else {
+          res.status(500).json({
+            status: false,
+            message: "User already exist please try with diffrent email/phone or login"
+          });
+        }
+      } else {
+        res.status(404).json({
+          status: false,
+          message: "user id or old password mismatch"
+        });
+      }
+    } catch (err) {
+      res.status(404).json({
+        status: false,
+        message: "user id or old password mismatch"
+      });
+    }
+  }
+];
+exports.updateWallet = [
+  sanitizeBody("userId"),
+  sanitizeBody("paymentId"),
+  sanitizeBody("razarPayPaymentId"),
+  async (req, res) => {
+    let data;
+
+    data = await instance.orders.fetch(req.body.paymentId);
+    if (
+      data.amount === data.amount_paid &&
+      data.amount_due === 0 &&
+      data.receipt === "WALLET" &&
+      data.notes.userId === req.body.userId
+    ) {
+      try {
+        let updatePaymentData = {
+          paidFrom: "WALLET",
+          amount: data.amount_paid / 100,
+          isPaid: true,
+          razarPayPaymentId: req.body.razarPayPaymentId
+        };
+
+        let dataRecord = await Payment.findOneAndUpdate(
+          {
+            $and: [{ paymentId: req.body.paymentId, userId: req.body.userId }]
+          },
+          { $set: updatePaymentData },
+          { new: true }
+        );
+        if (dataRecord) {
+          let previousAmount = await User.findOne({ _id: req.body.userId });
+          let totalAmount;
+          if (previousAmount) {
+            totalAmount = previousAmount.walletAmount + data.amount_paid / 100;
+          } else {
+            totalAmount = data.amount_paid / 100;
+          }
+          let update = await User.findOneAndUpdate(
+            { _id: req.body.userId },
+            { $set: { walletAmount: totalAmount } },
+            { new: true }
+          );
+          if (update) {
+            res.status(200).json({
+              status: true,
+              message: "wallet amount updated successfully",
+              walletAmount: update.walletAmount
+            });
+          } else {
+            res.status(200).json({
+              status: true,
+              message: "wallet amount not able to update in user table"
+            });
+          }
+        } else {
+          res.status(200).json({
+            status: false,
+            message: "Payment Data not updated successfully in payment table"
+          });
+        }
+      } catch (err) {
+        console.log(err);
+        res.status(500).json({
+          status: false,
+          message: "Something went wrong"
+        });
+      }
+    }
+  }
+];
+
+exports.getTranscationDetails = [
+  sanitizeBody("userId"),
+  async (req, res) => {
+    try {
+      let data = await Payment.find({ userId: req.body.userId }).populate(
+        "orderId"
+      );
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "Transcation history listed sucessfully",
+          transcationHistory: data
+        });
+      } else {
+        res.status(200).json({
+          status: true,
+          message: "Transcation history not listed sucessfully"
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];
+
+exports.getStaticPage = [
+  async (req, res) => {
+    let types = req.body.type;
+    switch (req.body.type) {
+      case "PRIVACY":
+        try {
+          let data = await Privacy.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "Privacy policy listed sucessfully",
+            privacyPolicy: data[0]
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+      case "ABOUT":
+        try {
+          let data = await Aboutus.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "About us listed sucessfully",
+            Aboutus: data[0]
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+      case "TERMS":
+        try {
+          let data = await Temrs.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "Terms listed sucessfully",
+            terms: data[0]
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+      case "HOWISITWORK":
+        try {
+          let data = await Howisitwork.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "How is it work listed sucessfully",
+            terms: data
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+      default:
+        try {
+          let data = await Privacy.find({}).sort({ createdAt: -1 });
+          res.status(200).json({
+            status: true,
+            message: "Privacy policy listed sucessfully",
+            privacyPolicy: data[0]
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        break;
+    }
+  }
+];
+
+exports.getNotification = [
+  async (Req, res) => {
+    try {
+      let data = await Notification.find({}).sort({ createdDate: -1 });
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "Notification listed successfully",
+          notifications: data
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: "Notification listed is empty"
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];

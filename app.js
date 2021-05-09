@@ -13,8 +13,13 @@ var vechicleRouter = require('./routes/vechicle');
 var orderRouter = require('./routes/order');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
+const cors = require('cors')
+
 
 var app = express();
+
+app.use(cors())
+
 
 
 mongoose.connect('mongodb+srv://pavan:Pavan123@cluster0.bcifb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
@@ -25,6 +30,10 @@ db.once('open', () => {console.log('db connected successfully');});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+
+
+
 
 app.use(logger('dev'));
 app.use(express.json());

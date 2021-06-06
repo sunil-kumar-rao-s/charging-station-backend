@@ -8,6 +8,9 @@ const Temrs = require('../schema/termsandcondition');
 const Aboutus = require('../schema/aboutus');
 const Howisitwork = require('../schema/Howisitwork');
 const Notification = require('../schema/notification');
+const Payment = require('../schema/payment');
+const {calculateTotalAmount} = require("../common/common");
+const ChargingPoints = require('../schema/chargingpointmodel');
 
 exports.createAdminUser = [
   sanitizeBody("userName"),
@@ -193,7 +196,7 @@ exports.updateOrder = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Order updated successfully",        
+          message: "Order updated successfully",
         });
       } else {
         res.status(200).json({
@@ -215,7 +218,7 @@ async(req, res) => {
   try{
     let privacy = new Privacy({
       version: req.body.version,
-      content: req.body.content,    
+      content: req.body.content,
     });
     let data = await privacy.save();
     if(data){
@@ -425,6 +428,35 @@ exports.addNotification = [
         status: false,
         message: 'Something went wrong',
       });
-    }  
+    }
   }
 ]
+
+exports.dashBoard = [
+    async (req, res) => {
+  try {
+    const user = await User.find({});
+    const payments = await Payment.find({});
+    const chargingPoints = await ChargingPoints.find({});
+    const AdminUsers = await Admin.find({});
+    let totalAmount = await calculateTotalAmount(payments);
+    res.status(200).json({
+      status: true,
+      users: user,
+      payments,
+      totalAmount,
+      totalCharged: 0,
+      activeCharging: 5,
+      chargingPoints,
+      AdminUsers,
+      totalHoast: 5
+    });
+  } catch (e) {
+    res.status(500).json({
+      status: true,
+      message: 'Something went wrong'
+    });
+  }
+
+    }
+];

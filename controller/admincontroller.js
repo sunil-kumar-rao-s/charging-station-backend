@@ -150,27 +150,32 @@ exports.getOrderList = [
   sanitizeBody("adminId"),
   async (req, res) => {
     try {
+      console.log('getOrderList----> 1');
       let data = await Order.find({})
-        .populate("userId")
-        .populate("vechicleId")
-        .populate("chargingPointId")
-        .populate({path:'vechicleId', populate:{path: 'category'}})
-        .populate({path:'vechicleId', populate:{path: 'subCategory'}})
-        .populate({path:'vechicleId', populate:{path: 'userId'}})
+        .populate("user")
+        .populate("vechicle")
+        .populate("Chargingpoint")
+        .populate({path:'vechicle', populate:{path: 'category'}})
+        .populate({path:'vechicle', populate:{path: 'subCategory'}})
+        .populate({path:'vechicle', populate:{path: 'userId'}})
         .exec();
+      console.log('getOrderList----> 2');
       if (data) {
+        console.log('getOrderList----> 3');
         res.status(200).json({
           status: true,
           message: "All orders listed successfully",
           order: data
         });
       } else {
+        console.log('getOrderList----> 4');
         res.json(200).json({
           status: false,
           message: "Order list empty"
         });
       }
     } catch (err) {
+      console.log('getOrderList----> 5 ',err);
       res.json(500).json({
         status: false,
         message: "Something went wrong"

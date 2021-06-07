@@ -19,9 +19,9 @@ exports.createOrder = [
       console.log('requested date ===> ', new Date(Number(req.body.bookingDate)))
       let order = new Order({
         bookingDate: new Date(Number(req.body.bookingDate)),
-        userId: req.body.userId,
-        vechicleId: req.body.vechicleId,
-        chargingPointId: req.body.chargingPointId
+        user: req.body.userId,
+        vechicle: req.body.vechicleId,
+        chargingPoint: req.body.chargingPointId
       });
       let data = await order.save();
       if (data) {
@@ -57,11 +57,11 @@ exports.createOrderId = [
       currency: "INR",
       receipt: req.body.orderType,
       payment_capture: "1",
-      notes:{        
+      notes:{
           userId: req.body.userId,
-          orderType: req.body.orderType,        
+          orderType: req.body.orderType,
       }
-      
+
     };
     instance.orders.create(options, async function(err, order) {
       if (err) {
@@ -84,22 +84,22 @@ exports.createOrderId = [
               status: true,
               message: "Order id created successfully",
               orderId: order.id
-            });  
+            });
           }else {
             res.status(200).json({
               status: false,
               message: "Not able to store orderId",
               paymentId: order.id
-            });  
+            });
         }
-        
+
         } catch(err){
           console.log(err)
           res.status(500).json({
             status: false,
             message: "Something went wrong"
           });
-        }        
+        }
       }
     });
   }

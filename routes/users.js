@@ -19,5 +19,5 @@ router.post('/changepassword', useController.updatePassword)
 router.post('/updatewallet', useController.updateWallet);
 router.post('/transcationhistory',useController.getTranscationDetails);
 router.post('/getstaticpage',useController.getStaticPage);
-router.post('/getnotifications',common.checkUser,useController.getNotification);
+router.post('/getnotifications',useController.getNotification);
 module.exports = router;

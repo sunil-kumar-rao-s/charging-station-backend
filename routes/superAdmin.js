@@ -11,5 +11,6 @@ router.get('/',function (req, res) {
 })
 
 router.post('/create', superAdminController.createSuperAdmin);
+router.post('/login', superAdminController.superLogin);
 
 module.exports = router;

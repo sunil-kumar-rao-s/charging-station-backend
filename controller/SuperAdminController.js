@@ -40,3 +40,25 @@ exports.createSuperAdmin = [
         }
     }
 ];
+
+exports.superLogin = [
+    sanitizeBody('email').trim(),
+    sanitizeBody('mobileNo').trim(),
+    sanitizeBody('password').trim(),
+    async (req, res) => {
+    let data = await SuperAdmin.findOne({
+        $and:[{password: req.body.password},{$or:[{email: req.body.email},{phone: req.body.mobileNo}]}]
+    });
+    if (data){
+        res.status(200).json({
+            status: true,
+            superAdmin: data
+        });
+    } else {
+        res.status(404).json({
+            status: false,
+            message: 'user not found'
+        })
+    }
+    }
+]

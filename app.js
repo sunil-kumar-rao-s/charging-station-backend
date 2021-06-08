@@ -11,6 +11,7 @@ var watchlistRouter = require('./routes/watchlist');
 var charginpointRouter= require('./routes/chargingpoint');
 var vechicleRouter = require('./routes/vechicle');
 var orderRouter = require('./routes/order');
+var superAdminRouter = require('./routes/superAdmin');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
 const cors = require('cors')
@@ -49,6 +50,7 @@ app.use('/charginpoint', charginpointRouter);
 app.use('/vechicle',vechicleRouter);
 app.use('/watchlist', watchlistRouter);
 app.use('/order', orderRouter);
+app.use('/superadmin',superAdminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

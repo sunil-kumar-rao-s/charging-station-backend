@@ -8,7 +8,7 @@ const superAdmin = new Schema(
         email: { type: String, required: true, unique: true },
         phone: { type: String, required: true },
         password: {type: String, required: true}
-    },{capped: true,size: 1024, max:1, timestamps: true}
+    },{ timestamps: true}
 )
 
 module.exports = mongoose.model("superadmin", superAdmin);

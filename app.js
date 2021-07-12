@@ -11,7 +11,6 @@ var watchlistRouter = require('./routes/watchlist');
 var charginpointRouter= require('./routes/chargingpoint');
 var vechicleRouter = require('./routes/vechicle');
 var orderRouter = require('./routes/order');
-var superAdminRouter = require('./routes/superAdmin');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
 const cors = require('cors')
@@ -21,12 +20,12 @@ var app = express();
 
 app.use(cors())
 
+//TEST
+
+//mongoose.connect('mongodb+srv://pavan:Pavan123@cluster0.bcifb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
 
 
-mongoose.connect('mongodb+srv://pavan:Pavan123@cluster0.bcifb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
-
-
-
+//PROD
 mongoose.connect('mongodb+srv://admin:vechicle123@cluster0.z047r.mongodb.net/electric?retryWrites=true&w=majority', { useNewUrlParser: true });
 
 const db = mongoose.connection;
@@ -55,7 +54,6 @@ app.use('/charginpoint', charginpointRouter);
 app.use('/vechicle',vechicleRouter);
 app.use('/watchlist', watchlistRouter);
 app.use('/order', orderRouter);
-app.use('/superadmin',superAdminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

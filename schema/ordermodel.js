@@ -4,13 +4,13 @@ const { Schema } = mongoose;
 const OrderSchema = new Schema(
   {
     bookingDate: { type: Date, required: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    vechicleId: {
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    vechicle: {
       type: Schema.Types.ObjectId,
       ref: "Vechicle",
       required: true
     },
-    chargingPointId: {
+    chargingPoint: {
       type: Schema.Types.ObjectId,
       ref: "ChargingPoint",
       required: true

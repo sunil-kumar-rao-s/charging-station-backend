@@ -39,3 +39,15 @@ exports.checkUser = async (req, res, next) => {
       });
   }
 };
+
+exports.calculateTotalAmount = async (transcationList) => {
+  let totalAmount = 0;
+  if (transcationList.length >0) {
+    await  transcationList.forEach((item) => {
+      if (item.isPaid){
+        totalAmount = totalAmount+ item.amount
+      }
+    });
+  }
+  return totalAmount;
+}

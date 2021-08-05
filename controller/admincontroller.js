@@ -1,5 +1,10 @@
-const { body, validationResult } = require("express-validator");
-const { sanitizeBody } = require("express-validator/filter");
+const {
+  body,
+  validationResult
+} = require("express-validator");
+const {
+  sanitizeBody
+} = require("express-validator/filter");
 const Admin = require("../schema/adminmodel");
 const User = require("../schema/usermodal");
 const Order = require("../schema/ordermodel");
@@ -9,7 +14,10 @@ const Aboutus = require('../schema/aboutus');
 const Howisitwork = require('../schema/Howisitwork');
 const Notification = require('../schema/notification');
 const Payment = require('../schema/payment');
-const {calculateTotalAmount} = require("../common/common");
+const hostissue = require('../schema/hostissues');
+const {
+  calculateTotalAmount
+} = require("../common/common");
 const ChargingPoints = require('../schema/chargingpointmodel');
 
 exports.createAdminUser = [
@@ -48,9 +56,16 @@ exports.login = [
   async (req, res) => {
     try {
       const data = await Admin.findOne({
-        $and: [
-          { password: req.body.password },
-          { $or: [{ email: req.body.email }, { phone: req.body.phone }] }
+        $and: [{
+            password: req.body.password
+          },
+          {
+            $or: [{
+              email: req.body.email
+            }, {
+              phone: req.body.phone
+            }]
+          }
         ]
       }).select("-password");
       if (data) {
@@ -86,7 +101,11 @@ exports.getAllUserList = [
         user;
       if (req.body.email || req.body.phone) {
         user = await User.findOne({
-          $or: [{ phone: req.body.phone }, { email: req.body.email }]
+          $or: [{
+            phone: req.body.phone
+          }, {
+            email: req.body.email
+          }]
         });
       } else {
         users = await User.find({});
@@ -119,12 +138,16 @@ exports.updateUserStatus = [
   sanitizeBody("userStatus"),
   async (req, res) => {
     try {
-      let status = { userStatus: req.body.userStatus };
-      let updateStatus = await User.findOneAndUpdate(
-        { _id: req.body.userId },
-        { $set: status },
-        { new: true }
-      );
+      let status = {
+        userStatus: req.body.userStatus
+      };
+      let updateStatus = await User.findOneAndUpdate({
+        _id: req.body.userId
+      }, {
+        $set: status
+      }, {
+        new: true
+      });
       if (updateStatus) {
         res.status(200).json({
           status: true,
@@ -155,9 +178,24 @@ exports.getOrderList = [
         .populate("user")
         .populate("vechicle")
         .populate("Chargingpoint")
-        .populate({path:'vechicle', populate:{path: 'category'}})
-        .populate({path:'vechicle', populate:{path: 'subCategory'}})
-        .populate({path:'vechicle', populate:{path: 'userId'}})
+        .populate({
+          path: 'vechicle',
+          populate: {
+            path: 'category'
+          }
+        })
+        .populate({
+          path: 'vechicle',
+          populate: {
+            path: 'subCategory'
+          }
+        })
+        .populate({
+          path: 'vechicle',
+          populate: {
+            path: 'userId'
+          }
+        })
         .exec();
       console.log('getOrderList----> 2');
       if (data) {
@@ -175,7 +213,7 @@ exports.getOrderList = [
         });
       }
     } catch (err) {
-      console.log('getOrderList----> 5 ',err);
+      console.log('getOrderList----> 5 ', err);
       res.json(500).json({
         status: false,
         message: "Something went wrong"
@@ -193,11 +231,13 @@ exports.updateOrder = [
       let updateValue = {
         status: req.body.status
       };
-      let data = await Order.findOneAndUpdate(
-        { _id: req.body.orderId },
-        { $set: updateValue },
-        { new: true }
-      );
+      let data = await Order.findOneAndUpdate({
+        _id: req.body.orderId
+      }, {
+        $set: updateValue
+      }, {
+        new: true
+      });
       if (data) {
         res.status(200).json({
           status: true,
@@ -219,32 +259,32 @@ exports.updateOrder = [
 ];
 
 exports.addStaticPage = [
-async(req, res) => {
-  try{
-    let privacy = new Privacy({
-      version: req.body.version,
-      content: req.body.content,
-    });
-    let data = await privacy.save();
-    if(data){
-      res.status(200).json({
-        status: true,
-        message: 'Privcy policy inserted successfully',
-        privacyPolicy: data,
+  async (req, res) => {
+    try {
+      let privacy = new Privacy({
+        version: req.body.version,
+        content: req.body.content,
       });
-    }else {
-      res.status(200).json({
+      let data = await privacy.save();
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: 'Privcy policy inserted successfully',
+          privacyPolicy: data,
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: 'Privcy policy not inserted successfully',
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
         status: false,
-        message: 'Privcy policy not inserted successfully',
+        message: 'Something went wrong',
       });
     }
-  }catch(err){
-    res.status(500).json({
-      status: false,
-      message: 'Something went wrong',
-    });
   }
-}
 ];
 
 exports.addTermsAndCondition = [
@@ -306,7 +346,7 @@ exports.addAboutUs = [
 ];
 
 exports.howisitwork = [
-  async(req, res) => {
+  async (req, res) => {
     try {
       let howisItWork = new Howisitwork({
         version: req.body.version,
@@ -340,7 +380,9 @@ exports.getStaticPage = [
     switch (req.body.type) {
       case "PRIVACY":
         try {
-          let data = await Privacy.find({}).sort({ createdAt: -1 });
+          let data = await Privacy.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "Privacy policy listed sucessfully",
@@ -352,7 +394,9 @@ exports.getStaticPage = [
         break;
       case "ABOUT":
         try {
-          let data = await Aboutus.find({}).sort({ createdAt: -1 });
+          let data = await Aboutus.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "About us listed sucessfully",
@@ -364,7 +408,9 @@ exports.getStaticPage = [
         break;
       case "TERMS":
         try {
-          let data = await Temrs.find({}).sort({ createdAt: -1 });
+          let data = await Temrs.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "Terms listed sucessfully",
@@ -377,7 +423,9 @@ exports.getStaticPage = [
 
       case "HOWISITWORK":
         try {
-          let data = await Howisitwork.find({}).sort({ createdAt: -1 });
+          let data = await Howisitwork.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "How is it work listed sucessfully",
@@ -389,7 +437,9 @@ exports.getStaticPage = [
         break;
       default:
         try {
-          let data = await Privacy.find({}).sort({ createdAt: -1 });
+          let data = await Privacy.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "Privacy policy listed sucessfully",
@@ -407,7 +457,7 @@ exports.addNotification = [
   sanitizeBody('title'),
   sanitizeBody('message'),
   sanitizeBody('createdDate'),
-  async(req, res) => {
+  async (req, res) => {
     const notification = new Notification({
       title: req.body.title,
       message: req.body.message,
@@ -415,20 +465,20 @@ exports.addNotification = [
     });
     try {
       let data = await notification.save();
-      if(data){
+      if (data) {
         res.status(200).json({
           status: true,
           message: 'Notification Created Successfully',
           notification: data,
         });
-      }else {
+      } else {
         res.status(200).json({
           status: false,
           message: 'Notification not Created Successfully',
         });
       }
     } catch (err) {
-      console.log('err=======> ',err)
+      console.log('err=======> ', err)
       res.status(500).json({
         status: false,
         message: 'Something went wrong',
@@ -437,31 +487,104 @@ exports.addNotification = [
   }
 ]
 
-exports.dashBoard = [
-    async (req, res) => {
-  try {
-    const user = await User.find({});
-    const payments = await Payment.find({});
-    const chargingPoints = await ChargingPoints.find({});
-    const AdminUsers = await Admin.find({});
-    let totalAmount = await calculateTotalAmount(payments);
-    res.status(200).json({
-      status: true,
-      users: user,
-      payments,
-      totalAmount,
-      totalCharged: 0,
-      activeCharging: 5,
-      chargingPoints,
-      AdminUsers,
-      totalHoast: 5
-    });
-  } catch (e) {
-    res.status(500).json({
-      status: true,
-      message: 'Something went wrong'
-    });
-  }
-
+exports.activateOrdeactivateNotification = [
+  sanitizeBody('notificationId'),
+  sanitizeBody('isNotificationActive'),
+  
+  async (req, res) => {
+    
+    try {
+     let data = await Notification.findOneAndUpdate(
+        { _id: req.body.notificationId },
+        { $set: {isNotificationActive: req.body.isNotificationActive} },
+        { new: true }
+      );
+      
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: 'Notification Updated Successfully',
+          notification: data,
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: 'Notification not Updated',
+        });
+      }
+    } catch (err) {
+      
+      console.log('err===================================> ', err);
+      res.status(500).json({
+        status: false,
+        message: 'Something went wrong while updating the notification',
+      });
     }
+  }
+]
+
+exports.dashBoard = [
+  async (req, res) => {
+    try {
+      const user = await User.find({});
+      const payments = await Payment.find({});
+      const chargingPoints = await ChargingPoints.find({});
+      const AdminUsers = await Admin.find({});
+      let totalAmount = await calculateTotalAmount(payments);
+      res.status(200).json({
+        status: true,
+        users: user,
+        payments,
+        totalAmount,
+        totalCharged: 0,
+        activeCharging: 5,
+        chargingPoints,
+        AdminUsers,
+        totalHoast: 5
+      });
+    } catch (e) {
+      res.status(500).json({
+        status: true,
+        message: 'Something went wrong'
+      });
+    }
+
+  }
+];
+
+exports.updateHostIssueStatus = [
+  sanitizeBody("adminId"),
+  sanitizeBody("issueId"),
+  sanitizeBody("resolved"),
+  async (req, res) => {
+    try {
+      let resolved = {
+        resolved: req.body.resolved
+      };
+      let updateStatus = await hostissue.findOneAndUpdate({
+        _id: req.body.issueId
+      }, {
+        $set: resolved
+      }, {
+        new: true
+      });
+      if (updateStatus) {
+        res.status(200).json({
+          status: true,
+          message: "Resolved Status updated successfully"
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "Resolved status not updated successfully"
+        });
+      }
+    } catch (err) {
+      console.log("error ", err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
 ];

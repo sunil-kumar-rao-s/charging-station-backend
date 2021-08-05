@@ -11,9 +11,11 @@ var watchlistRouter = require('./routes/watchlist');
 var charginpointRouter= require('./routes/chargingpoint');
 var vechicleRouter = require('./routes/vechicle');
 var orderRouter = require('./routes/order');
+var chargingSessionRouter = require('./routes/chargingSessionRoutes');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
-const cors = require('cors')
+const cors = require('cors');
+var hostRouter = require('./routes/hostRoutes');
 
 
 var app = express();
@@ -26,8 +28,10 @@ app.use(cors())
 
 
 //PROD
-mongoose.connect('mongodb+srv://admin:vechicle123@cluster0.z047r.mongodb.net/electric?retryWrites=true&w=majority', { useNewUrlParser: true });
+//mongoose.connect('mongodb+srv://admin:vechicle123@cluster0.z047r.mongodb.net/electric?retryWrites=true&w=majority', { useNewUrlParser: true });
 
+
+mongoose.connect('mongodb+srv://sunil:$unil007@cluster0.bf37g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, '\n connection error:'));
 db.once('open', () => {console.log('db connected successfully');});
@@ -54,6 +58,8 @@ app.use('/charginpoint', charginpointRouter);
 app.use('/vechicle',vechicleRouter);
 app.use('/watchlist', watchlistRouter);
 app.use('/order', orderRouter);
+app.use('/session', chargingSessionRouter);
+app.use('/host', hostRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

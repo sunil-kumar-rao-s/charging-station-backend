@@ -23,5 +23,7 @@ router.post('/add/about', common.checkAdmin, adminController.addAboutUs);
 router.post('/getstaticpage', common.checkAdmin, adminController.getStaticPage);
 router.post('/add/howisitwork',common.checkAdmin, adminController.howisitwork);
 router.post('/add/notification',common.checkAdmin, adminController.addNotification);
+router.post('/update/notification',common.checkAdmin, adminController.activateOrdeactivateNotification);
 router.post('/dashboard', common.checkAdmin, adminController.dashBoard);
+router.post("/updatehostissuestatus", common.checkAdmin, adminController.updateHostIssueStatus);
 module.exports = router;

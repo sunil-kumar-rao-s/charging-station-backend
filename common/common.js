@@ -51,3 +51,23 @@ exports.calculateTotalAmount = async (transcationList) => {
   }
   return totalAmount;
 }
+
+
+exports.checkHost = async (req, res, next) => {
+  try {
+    let data = await Host.findOne({ _id: req.body.hostId });
+    if (data) {
+      next();
+    } else {
+      res.status(200).json({
+        status: false,
+        message: "This user is not a host"
+      });
+    }
+  } catch (err) {
+    res.status(200).json({
+        status: false,
+        message: "This user is not a host"
+      });
+  }
+};

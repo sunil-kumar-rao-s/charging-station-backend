@@ -1,5 +1,10 @@
-const { body, validationResult } = require("express-validator");
-const { sanitizeBody } = require("express-validator/filter");
+const {
+  body,
+  validationResult
+} = require("express-validator");
+const {
+  sanitizeBody
+} = require("express-validator/filter");
 const Vechicle = require("../schema/vechicle");
 
 exports.addVechicle = [
@@ -27,7 +32,9 @@ exports.addVechicle = [
           vechicleType: req.body.vechicleType,
         });
         const data = await vechicle.save();
-        let vechicleData = await Vechicle.findById({ _id: data._id })
+        let vechicleData = await Vechicle.findById({
+            _id: data._id
+          })
           .populate("category")
           .populate("subCategory")
           .populate("userId", "-password")
@@ -58,7 +65,9 @@ exports.getVechicleList = [
   sanitizeBody("userId"),
   async (req, res) => {
     try {
-      let data = await Vechicle.find({ userId: req.body.userId })
+      let data = await Vechicle.find({
+          userId: req.body.userId
+        })
         .populate("category")
         .populate("subCategory")
         .exec();
@@ -93,9 +102,14 @@ exports.updateVechicleList = [
   sanitizeBody("vechicleType"),
   async (req, res) => {
     let duplicateData = await Vechicle.findOne({
-      $and: [
-        { vechicleNumber: req.body.vechicleNumber },
-        { _id: { $ne: req.body.vechicleId } }
+      $and: [{
+          vechicleNumber: req.body.vechicleNumber
+        },
+        {
+          _id: {
+            $ne: req.body.vechicleId
+          }
+        }
       ]
     });
 
@@ -112,11 +126,14 @@ exports.updateVechicleList = [
         vechicleType: req.body.vechicleType
       };
       try {
-        let data = await Vechicle.findOneAndUpdate(
-          { _id: req.body.vechicleId, userId: req.body.userId },
-          { $set: updatedData },
-          { new: true }
-        )
+        let data = await Vechicle.findOneAndUpdate({
+            _id: req.body.vechicleId,
+            userId: req.body.userId
+          }, {
+            $set: updatedData
+          }, {
+            new: true
+          })
           .populate("category")
           .populate("subCategory")
           .exec();

@@ -17,11 +17,13 @@
     "moment": "2.27.0",
     "mongoose": "5.12.13",
     "morgan": "1.9.1",
+    "nodemo": "^1.0.0",
+    "optional-require": "^1.0.3",
     "pug": "2.0.0-beta11",
     "razorpay": "2.0.6",
     "socket.io": "2.3.0"
   },
   "devDependencies": {
-    "nodemon": "2.0.4"
+    "nodemon": "^2.0.12"
   }
 }

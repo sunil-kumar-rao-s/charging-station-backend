@@ -29,7 +29,7 @@ exports.createUser = [
       if (mobileNumberData) {
         res.status(409).json({
           status: false,
-          message: "Email or Mobilenumber already exsist"
+          message: "Email or Mobile number already exsist"
         });
       } else {
         const user = new User({
@@ -48,7 +48,7 @@ exports.createUser = [
         } catch (err) {
           res.status(200).json({
             status: false,
-            message: "Email or mobile number already exsist"
+            message: "Email or mobile number already exsist."
           });
         }
       }

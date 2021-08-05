@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const CharginPointSchema = new Schema({
-  uniqueId: { type: String, required: true, unique: true },
+  
   location: {
     type: {
       type: String,
@@ -21,7 +21,11 @@ const CharginPointSchema = new Schema({
   avilablePort: { type: Number },
   landMark: { type: String },
   address: { type: String, required: true },
-  pricePerHour: { type: Number, required: true },
+  hostId: { type: String, required: true },
+  isOpen: { type: String, required: true },
+  businessType: { type: String, required: true },
+  businessName: { type: String, required: true },
+  businessDescription: { type: String, required: true },
   port: [{ type: Schema.Types.ObjectId, ref: 'Chargingpoint' }]
 });
 

@@ -157,7 +157,7 @@ exports.updateChargingPoint = [
         address: req.body.address,
         pricePerHour: req.body.pricePerHour,
         location: location,
-        hostId: hostId
+        hostId: req.body.hostId
       };
       let data = await chargingPoints.findOneAndUpdate({
         _id: req.body.chargingPointId
@@ -179,6 +179,7 @@ exports.updateChargingPoint = [
         });
       }
     } catch (err) {
+      console.log(err);
       res.status(500).json({
         status: false,
         message: "Charging point not updated successfully."
@@ -188,17 +189,19 @@ exports.updateChargingPoint = [
 ];
 
 exports.getChargingPointList = [
-  sanitizeBody("chargingPointId").trim(),
+ /// sanitizeBody("chargingPointId").trim(),
   async (req, res) => {
     try {
+      console.log("--------------------+++++++++++++++++++++++++++++++");
       var data = await chargingPoints.find({}).populate(
         "port"
       );
+      console.log("--------------------"+ data);
       if (data) {
         res.status(200).json({
           status: true,
           message: "chargining points listed successfully",
-          charginPoint: data
+          charginPointData: data
         });
       } else {
         res.status(500).json({
@@ -207,6 +210,7 @@ exports.getChargingPointList = [
         });
       }
     } catch (err) {
+      console.log(err);
       res.status(500).json({
         status: false,
         message: "Something went wrong."

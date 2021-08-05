@@ -304,7 +304,7 @@ exports.getCharginingPointsBylocation = [
         res.status(200).json({
           status: true,
           message: 'Chargining point listed sucessfully',
-          chargingPoint: data,
+          charginPoint: data,
         })
       } else {
         res.status(200).json({

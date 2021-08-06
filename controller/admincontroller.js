@@ -95,7 +95,7 @@ exports.login = [
 exports.getAllUserList = [
   sanitizeBody("adminId"),
   sanitizeBody("email"),
-  sanitizeBody("mobileNumber"),
+  sanitizeBody("phone"),
   async (req, res) => {
     try {
       let users = [],
@@ -622,6 +622,48 @@ exports.updateHostStatus = [
       res.status(500).json({
         status: false,
         message: "Something went wrong."
+      });
+    }
+  }
+];
+
+exports.getAllHostList = [
+  sanitizeBody("adminId"),
+  sanitizeBody("email"),
+  sanitizeBody("mobileNumber"),
+  async (req, res) => {
+    try {
+      let hosts = [],
+        host;
+      if (req.body.email || req.body.phone) {
+        host = await Host.findOne({
+          $or: [{
+            phone: req.body.phone
+          }, {
+            email: req.body.email
+          }]
+        });
+      } else {
+        hosts = await Host.find({});
+      }
+      if (host || hosts) {
+        res.status(200).json({
+          status: true,
+          message: "All Host list populated successfully",
+          hosts,
+          host
+        });
+      } else {
+        res.status(204).json({
+          status: true,
+          message: "All Host not avilable"
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: true,
+        message: "Some thing went wrong."
       });
     }
   }

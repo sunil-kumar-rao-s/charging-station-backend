@@ -17,12 +17,12 @@ router.post('/addhost', hostController.createHost);
 router.post('/login', hostController.login);
 //router.get('/getbookings', hostController.getBookings);
 router.get('/getprofile',common.checkHost, hostController.getProfile);
-router.post('/updateprofile', hostController.updateProfile);
-router.post('/issues', hostController.hostIssues);
-router.get('/getissues', hostController.getAllHostIssues);
-router.post('/updatespecificportstatus', hostController.updateSpecificPortStatus);
-router.get('/getallports', hostController.getChargingPointList);
-router.get('/showallhostsessions', hostController.showAllHostSessions);
-router.get('/getallhosttransactions', hostController.showAllHostTransactions); //not being called
-router.post('/updatestationstatus',hostController.updateStationStatus);
+router.post('/updateprofile',common.checkHost, hostController.updateProfile);
+router.post('/issues',common.checkHost, hostController.hostIssues);
+router.get('/getissues',common.checkHost, hostController.getAllHostIssues);
+router.post('/updatespecificportstatus',common.checkHost, hostController.updateSpecificPortStatus);
+router.get('/getallports',common.checkHost, hostController.getChargingPointList);
+router.get('/showallhostsessions',common.checkHost, hostController.showAllHostSessions);
+router.get('/getallhosttransactions',common.checkHost, hostController.showAllHostTransactions); //not being called
+router.post('/updatestationstatus',common.checkHost,hostController.updateStationStatus);
 module.exports = router;

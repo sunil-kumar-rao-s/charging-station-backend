@@ -26,4 +26,5 @@ router.post('/add/notification',common.checkAdmin, adminController.addNotificati
 router.post('/update/notification',common.checkAdmin, adminController.activateOrdeactivateNotification);
 router.post('/dashboard', common.checkAdmin, adminController.dashBoard);
 router.post("/updatehostissuestatus", common.checkAdmin, adminController.updateHostIssueStatus);
+router.post('/updatehoststatus',common.checkAdmin, adminController.updateHostStatus);
 module.exports = router;

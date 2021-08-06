@@ -16,7 +16,7 @@ router.get('/', function (req, res, next) {
 router.post('/addhost', hostController.createHost);
 router.post('/login', hostController.login);
 //router.get('/getbookings', hostController.getBookings);
-router.get('/getprofile', hostController.getProfile);
+router.get('/getprofile',common.checkHost, hostController.getProfile);
 router.post('/updateprofile', hostController.updateProfile);
 router.post('/issues', hostController.hostIssues);
 router.get('/getissues', hostController.getAllHostIssues);

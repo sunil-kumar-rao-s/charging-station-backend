@@ -1,5 +1,6 @@
 const Admin = require("../schema/adminmodel");
 const User = require('../schema/usermodal');
+const Host = require('../schema/hostmodel');
 
 exports.checkAdmin = async (req, res, next) => {
   try {
@@ -55,9 +56,19 @@ exports.calculateTotalAmount = async (transcationList) => {
 
 exports.checkHost = async (req, res, next) => {
   try {
-    let data = await Host.findOne({ _id: req.body.hostId });
+    let data = await Host.findOne({ _id: req.query.hostId });
+    
     if (data) {
-      next();
+      if(data.hostStatus == "true"){
+        next();
+      }
+      else{
+        res.status(200).json({
+          status: false,
+          message: "This user is Blocked"
+        });
+      }
+     
     } else {
       res.status(200).json({
         status: false,

@@ -6,6 +6,7 @@ const {
   sanitizeBody
 } = require("express-validator/filter");
 const Admin = require("../schema/adminmodel");
+const Host = require("../schema/hostmodel");
 const User = require("../schema/usermodal");
 const Order = require("../schema/ordermodel");
 const Privacy = require('../schema/privacypolicy');
@@ -577,6 +578,43 @@ exports.updateHostIssueStatus = [
         res.status(204).json({
           status: false,
           message: "Resolved status not updated successfully"
+        });
+      }
+    } catch (err) {
+      console.log("error ", err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
+];
+
+exports.updateHostStatus = [
+  sanitizeBody("adminId"),
+  sanitizeBody("hostId"),
+  sanitizeBody("hostStatus"),
+  async (req, res) => {
+    try {
+      let status = {
+        hostStatus: req.body.hostStatus
+      };
+      let updateStatus = await Host.findOneAndUpdate({
+        _id: req.body.hostId
+      }, {
+        $set: status
+      }, {
+        new: true
+      });
+      if (updateStatus) {
+        res.status(200).json({
+          status: true,
+          message: "User status updated successfully"
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "User status not updated successfully"
         });
       }
     } catch (err) {

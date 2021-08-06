@@ -24,7 +24,8 @@ const UserSchema = new Schema(
     hostStatus: {type: String, default: true},
     businessWebsite: { type: String, required: true },
     chargerFor: { type: String, required: true }, //bike or car
-    password: { type: String, required: true } 
+    password: { type: String, required: true },
+    hostStatus: { type: String, required: true, default: "true" } 
   },
   {
     timestamps: true

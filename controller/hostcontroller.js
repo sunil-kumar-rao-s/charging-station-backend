@@ -126,14 +126,14 @@ exports.login = [
           data: data
         });
       } else {
-        res.status(410).json({
+        res.status(203).json({
           status: false,
           message: "invalid username or password..."
         });
       }
     } catch (err) {
       console.log(err);
-      res.status(410).json({
+      res.status(203).json({
         status: false,
         message: "invalid username or password"
       });
@@ -145,7 +145,7 @@ exports.getProfile = async (req, res) => {
   try {
     console.log("view profile called");
     let data = await Host.findOne({
-      _id: req.query.id
+      _id: req.query.hostId
     }).select("-password");
     res.status(200).json({
       status: true,

@@ -450,3 +450,110 @@ exports.dashBoard = [
 
   }
 ];
+
+exports.updateStationStatus = [
+  sanitizeBody("hostId"),
+  sanitizeBody("isOpen"),
+
+  async (req, res) => {
+    try {
+      console.log("-------------------------------------------inside try block")
+      let status = {
+        isOpen: req.body.isOpen
+      };
+      let updateStatus = await ChargingStations.findOneAndUpdate({
+        hostId : req.body.hostId
+      }, {
+        $set: status
+      }, {
+        new: true
+      });
+      console.log("-------------------------------------------before if "+ updateStatus)
+      if (updateStatus) {
+        res.status(200).json({
+          status: true,
+          message: "Station status updated successfully"
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "Station status not updated successfully"
+        });
+      }
+      if(req.body.isOpen == "true"){
+        console.log("++++++++++++++++++++++++++++++++++++++++++++++++inside if ");
+        let portstatus = {
+          isOnline : "true"
+        };
+        let updateStatus = await ChargingPorts.update({
+          hostId : req.body.hostId
+        }, {
+          $set: portstatus
+        }, {
+          multi: true
+        });
+      }
+      else{
+        console.log("++++++++++++++++++++++++++++++++++++++++++++++++inside else ");
+        let portstatus = {
+          isOnline : "false"
+        };
+        let updateStatus = await ChargingPorts.update({
+          hostId : req.body.hostId
+        }, {
+          $set: portstatus
+        }, {
+          multi: true
+        });
+
+      }
+    } catch (err) {
+      console.log("error ", err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
+];
+
+exports.updateSpecificPortStatus = [
+  sanitizeBody("hostId"),
+  sanitizeBody("isOnline"),
+  sanitizeBody("portId"),
+
+  async (req, res) => {
+    try {
+      console.log("-------------------------------------------inside try block")
+      let status = {
+        isOnline: req.body.isOnline
+      };
+      let updateStatus = await ChargingPorts.findOneAndUpdate({
+        _id : req.body.portId
+      }, {
+        $set: status
+      }, {
+        new: true
+      });
+      console.log("-------------------------------------------before if "+ updateStatus)
+      if (updateStatus) {
+        res.status(200).json({
+          status: true,
+          message: "Station status updated successfully"
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "Station status not updated successfully"
+        });
+      }
+      
+    } catch (err) {
+      console.log("error ", err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
+];

@@ -20,9 +20,9 @@ router.get('/getprofile', hostController.getProfile);
 router.post('/updateprofile', hostController.updateProfile);
 router.post('/issues', hostController.hostIssues);
 router.get('/getissues', hostController.getAllHostIssues);
-//router.post('/changepassword', useController.updatePassword)
+router.post('/updatespecificportstatus', hostController.updateSpecificPortStatus);
 router.get('/getallports', hostController.getChargingPointList);
 router.get('/showallhostsessions', hostController.showAllHostSessions);
 router.get('/getallhosttransactions', hostController.showAllHostTransactions); //not being called
-//router.post('/getnotifications',useController.getNotification);
+router.post('/updatestationstatus',hostController.updateStationStatus);
 module.exports = router;

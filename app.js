@@ -28,10 +28,10 @@ app.use(cors())
 
 
 //PROD
-mongoose.connect('mongodb+srv://admin:vechicle123@cluster0.z047r.mongodb.net/electric?retryWrites=true&w=majority', { useNewUrlParser: true });
+//mongoose.connect('mongodb+srv://admin:vechicle123@cluster0.z047r.mongodb.net/electric?retryWrites=true&w=majority', { useNewUrlParser: true });
 
 //sunil test db
-//mongoose.connect('mongodb+srv://sunil:$unil007@cluster0.bf37g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
+mongoose.connect('mongodb+srv://sunil:$unil007@cluster0.bf37g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, '\n connection error:'));
 db.once('open', () => {console.log('db connected successfully');});

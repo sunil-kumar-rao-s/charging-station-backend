@@ -20,4 +20,6 @@ router.post('/updatewallet', useController.updateWallet);
 router.post('/transcationhistory',useController.getTranscationDetails);
 router.post('/getstaticpage',useController.getStaticPage);
 router.post('/getnotifications',useController.getNotification);
+router.post('/sendotp',useController.sendOtp);
+router.post('/otpauth',useController.otpAuth);
 module.exports = router;

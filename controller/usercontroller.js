@@ -1,5 +1,10 @@
-const { body, validationResult } = require("express-validator");
-const { sanitizeBody } = require("express-validator/filter");
+const {
+  body,
+  validationResult
+} = require("express-validator");
+const {
+  sanitizeBody
+} = require("express-validator/filter");
 const User = require("../schema/usermodal");
 const Payment = require("../schema/payment");
 const Razorpay = require("razorpay");
@@ -8,7 +13,11 @@ const Temrs = require("../schema/termsandcondition");
 const Aboutus = require("../schema/aboutus");
 const jwt = require("jsonwebtoken");
 const Howisitwork = require("../schema/Howisitwork");
+const OtpSchema = require("../schema/otpmodel");
 const Notification = require("../schema/notification");
+const accountSid = 'AC17f72be12091f22b27425f1a4352a5bc';
+const authToken = 'e5e40c0109c9c904fb1cdafb4df1604d';
+const client = require('twilio')(accountSid, authToken);
 
 var instance = new Razorpay({
   key_id: "rzp_test_6E8SjivqQhV3be",
@@ -24,7 +33,10 @@ exports.createUser = [
   async (req, res) => {
     try {
       let mobileNumberData = await User.findOne({
-        $or: [{ phone: req.body.phone, email: req.body.email }]
+        $or: [{
+          phone: req.body.phone,
+          email: req.body.email
+        }]
       });
       if (mobileNumberData) {
         res.status(409).json({
@@ -68,20 +80,33 @@ exports.login = [
   async (req, res) => {
     try {
       let data = await User.findOne({
-        $and: [
-          { password: req.body.password },
-          { $or: [{ phone: req.body.phone }, { email: req.body.email }] }
+        $and: [{
+            password: req.body.password
+          },
+          {
+            $or: [{
+              phone: req.body.phone
+            }, {
+              email: req.body.email
+            }]
+          }
         ]
       }).select("-password");
       if (data) {
         let lastDate = Date.now();
-        let lastloginDate = { lastActiveAt: lastDate };
-        let updateData = await User.findOneAndUpdate(
-          { _id: data._id },
-          { $set: lastloginDate },
-          { new: true }
-        );
-        const jwtToken = jwt.sign({ email: req.body.email }, "accessToken");
+        let lastloginDate = {
+          lastActiveAt: lastDate
+        };
+        let updateData = await User.findOneAndUpdate({
+          _id: data._id
+        }, {
+          $set: lastloginDate
+        }, {
+          new: true
+        });
+        const jwtToken = jwt.sign({
+          email: req.body.email
+        }, "accessToken");
         console.log("accessToekn=====> ", jwtToken);
         data.lastActiveAt = lastDate;
         res.status(200).json({
@@ -106,7 +131,9 @@ exports.login = [
 exports.getProfile = async (req, res) => {
   try {
     console.log("view profile called");
-    let data = await User.findOne({ _id: req.query.id }).select("-password");
+    let data = await User.findOne({
+      _id: req.query.id
+    }).select("-password");
     res.status(200).json({
       status: true,
       profileData: data
@@ -134,11 +161,13 @@ exports.updateProfile = [
       city: req.body.city
     };
     try {
-      let data = await User.findOneAndUpdate(
-        { _id: req.body.id },
-        { $set: updateValue },
-        { new: true }
-      ).select("-password");
+      let data = await User.findOneAndUpdate({
+        _id: req.body.id
+      }, {
+        $set: updateValue
+      }, {
+        new: true
+      }).select("-password");
       if (data) {
         res.status(200).json({
           status: true,
@@ -155,8 +184,7 @@ exports.updateProfile = [
     } catch (err) {
       res.status(500).json({
         status: false,
-        message:
-          "Email or mobile number already exsist with another user"
+        message: "Email or mobile number already exsist with another user"
       });
     }
   }
@@ -173,11 +201,15 @@ exports.updatePassword = [
         password: req.body.oldPassword
       });
       if (data) {
-        let newData = await User.updateOne(
-          { _id: req.body.id },
-          { $set: { password: req.body.newPassword } },
-          { new: true }
-        );
+        let newData = await User.updateOne({
+          _id: req.body.id
+        }, {
+          $set: {
+            password: req.body.newPassword
+          }
+        }, {
+          new: true
+        });
         if (newData) {
           res.status(200).json({
             status: true,
@@ -225,26 +257,35 @@ exports.updateWallet = [
           razarPayPaymentId: req.body.razarPayPaymentId
         };
 
-        let dataRecord = await Payment.findOneAndUpdate(
-          {
-            $and: [{ paymentId: req.body.paymentId, userId: req.body.userId }]
-          },
-          { $set: updatePaymentData },
-          { new: true }
-        );
+        let dataRecord = await Payment.findOneAndUpdate({
+          $and: [{
+            paymentId: req.body.paymentId,
+            userId: req.body.userId
+          }]
+        }, {
+          $set: updatePaymentData
+        }, {
+          new: true
+        });
         if (dataRecord) {
-          let previousAmount = await User.findOne({ _id: req.body.userId });
+          let previousAmount = await User.findOne({
+            _id: req.body.userId
+          });
           let totalAmount;
           if (previousAmount) {
             totalAmount = previousAmount.walletAmount + data.amount_paid / 100;
           } else {
             totalAmount = data.amount_paid / 100;
           }
-          let update = await User.findOneAndUpdate(
-            { _id: req.body.userId },
-            { $set: { walletAmount: totalAmount } },
-            { new: true }
-          );
+          let update = await User.findOneAndUpdate({
+            _id: req.body.userId
+          }, {
+            $set: {
+              walletAmount: totalAmount
+            }
+          }, {
+            new: true
+          });
           if (update) {
             res.status(200).json({
               status: true,
@@ -278,7 +319,9 @@ exports.getTranscationDetails = [
   sanitizeBody("userId"),
   async (req, res) => {
     try {
-      let data = await Payment.find({ userId: req.body.userId }).populate(
+      let data = await Payment.find({
+        userId: req.body.userId
+      }).populate(
         "orderId"
       );
       if (data) {
@@ -308,7 +351,9 @@ exports.getStaticPage = [
     switch (req.body.type) {
       case "PRIVACY":
         try {
-          let data = await Privacy.find({}).sort({ createdAt: -1 });
+          let data = await Privacy.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "Privacy policy listed sucessfully",
@@ -320,7 +365,9 @@ exports.getStaticPage = [
         break;
       case "ABOUT":
         try {
-          let data = await Aboutus.find({}).sort({ createdAt: -1 });
+          let data = await Aboutus.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "About us listed sucessfully",
@@ -332,7 +379,9 @@ exports.getStaticPage = [
         break;
       case "TERMS":
         try {
-          let data = await Temrs.find({}).sort({ createdAt: -1 });
+          let data = await Temrs.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "Terms listed sucessfully",
@@ -344,7 +393,9 @@ exports.getStaticPage = [
         break;
       case "HOWISITWORK":
         try {
-          let data = await Howisitwork.find({}).sort({ createdAt: -1 });
+          let data = await Howisitwork.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "How is it work listed sucessfully",
@@ -356,7 +407,9 @@ exports.getStaticPage = [
         break;
       default:
         try {
-          let data = await Privacy.find({}).sort({ createdAt: -1 });
+          let data = await Privacy.find({}).sort({
+            createdAt: -1
+          });
           res.status(200).json({
             status: true,
             message: "Privacy policy listed sucessfully",
@@ -373,7 +426,9 @@ exports.getStaticPage = [
 exports.getNotification = [
   async (Req, res) => {
     try {
-      let data = await Notification.find({}).sort({ createdDate: -1 });
+      let data = await Notification.find({}).sort({
+        createdDate: -1
+      });
       if (data) {
         res.status(200).json({
           status: true,
@@ -386,6 +441,125 @@ exports.getNotification = [
           message: "Notification listed is empty"
         });
       }
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];
+
+exports.sendOtp = [
+  sanitizeBody("phone"),
+  async (req, res) => {
+    try {
+
+      let OTP = '';
+      for (let i = 0; i < 6; i++) {
+        OTP += [Math.floor(Math.random() * 10)];
+      }
+      client.messages
+        .create({
+          body: 'Your FeedMyEv OTP is:' + OTP,
+          messagingServiceSid: 'MG0fe03282174f984b27182bb902ed51eb',
+          to: req.body.phone
+        })
+        .then(console.log("otp sent"))
+        .done();
+      let data = await OtpSchema.findOne({
+        phone: req.body.phone
+      })
+      if (data) {
+
+        let data1 = await OtpSchema.findOneAndUpdate({
+          phone: req.body.phone
+        }, {
+          $set: {
+            otp: OTP
+          }
+        }, {
+          new: true
+        }, function (err, docs) {
+          if (err) {
+            console.log(err),
+            res.status(200).json({
+              status: false,
+              message: "couldnt save otp"
+            });
+          } else {
+            console.log("Doc : ", docs),
+            res.status(200).json({
+              status: true,
+              message: "new data inserted",
+              data1
+            });
+          }
+        });
+        
+
+      } else {
+
+        const phoneotp = new OtpSchema({
+
+          phone: req.body.phone,
+          otp: OTP
+
+        });
+        try {
+          const data = await phoneotp.save();
+          res.status(200).json({
+            status: true,
+            data
+          });
+        } catch (err) {
+          res.status(200).json({
+            status: false,
+            message: "couldnt save otp"
+          });
+        }
+      }
+
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];
+
+
+exports.otpAuth = [
+  sanitizeBody("otp"),
+  sanitizeBody("phone"),
+  async (req, res) => {
+    try {
+
+
+      let data = await OtpSchema.findOne({
+        phone: req.body.phone,
+        otp: req.body.otp
+
+      });
+
+
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "otp auth successful",
+          data
+        });
+      } else {
+        res.status(401).json({
+          status: true,
+          message: "OTP mismatch",
+          data
+        });
+      }
+
     } catch (err) {
       res.status(500).json({
         status: false,

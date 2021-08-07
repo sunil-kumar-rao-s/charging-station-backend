@@ -11,7 +11,8 @@ const UserSchema = new Schema(
     lastActiveAt: {type:Date},
     userStatus: {type: String, default: true},
     walletAmount: {type: Number, default: 0},
-    currentSessionId: {type: String, default:"not assigned" }
+    currentSessionId: {type: String, default:"not assigned"}
+     
   },
   {
     timestamps: true

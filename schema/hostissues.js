@@ -8,7 +8,7 @@ const hostIssuesSchema = new Schema(
     description: { type: String, required: true },
     photo: { type: String },
     resolved: {type: String, default:"Submitted"},
-    comments:{type: String, default:"Executive will contact you shortly"}
+    comments:{type: String, default:"Our Executive Will Get In Touch With You Shortly!!!"}
   },
   {
     timestamps: true

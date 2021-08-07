@@ -7,7 +7,7 @@ const hostIssuesSchema = new Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     photo: { type: String },
-    resolved: {type: Boolean, default:false}
+    resolved: {type: String, default:"false"}
   },
   {
     timestamps: true

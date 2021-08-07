@@ -300,10 +300,15 @@ exports.getChargingPointList = [
       }).populate(
         "ports"
       );
+      var data1 = await ChargingStations.find({
+        hostId: req.query.hostId
+      });
+      
       if (data) {
         res.status(200).json({
           status: true,
           message: "chargining ports listed successfully",
+          charginStations: data1,
           charginPoints: data
         });
       } else {

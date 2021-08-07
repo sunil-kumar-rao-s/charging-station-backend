@@ -557,10 +557,12 @@ exports.updateHostIssueStatus = [
   sanitizeBody("adminId"),
   sanitizeBody("issueId"),
   sanitizeBody("resolved"),
+  sanitizeBody("comments"),
   async (req, res) => {
     try {
       let resolved = {
-        resolved: req.body.resolved
+        resolved: req.body.resolved,
+        comments: req.body.comments
       };
       let updateStatus = await hostissue.findOneAndUpdate({
         _id: req.body.issueId
@@ -572,12 +574,12 @@ exports.updateHostIssueStatus = [
       if (updateStatus) {
         res.status(200).json({
           status: true,
-          message: "Resolved Status updated successfully"
+          message: "Resolved Status and comment updated successfully"
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "Resolved status not updated successfully"
+          message: "Resolved status and comment not updated successfully"
         });
       }
     } catch (err) {

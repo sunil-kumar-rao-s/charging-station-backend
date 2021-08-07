@@ -274,7 +274,7 @@ exports.hostIssues = [
 exports.getAllHostIssues = async (req, res) => {
   try {
     console.log("get all issues called");
-    let data = await Issues.findOne({
+    let data = await Issues.find({
       hostId: req.query.hostId
     });
     res.status(200).json({

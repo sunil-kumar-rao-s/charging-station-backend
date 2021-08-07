@@ -112,7 +112,7 @@ exports.endSession = [
   sanitizeBody("consumption").trim(),
   sanitizeBody("ratings").trim(),
   sanitizeBody("reviews").trim(),
-  
+
 
   async (req, res) => {
     try {
@@ -150,11 +150,11 @@ exports.endSession = [
         }, {
           upsert: true
         }, (error, doc) => {
-          console.log("--------------------------------------------111111111111111111111111111111" + endSession);
+
 
         });
 
-        console.log("-----------------------------------------22");
+
         const updateValue1 = {
 
           isOnline: true
@@ -169,12 +169,13 @@ exports.endSession = [
           new: true
         }, (error, doc) => {
 
-          console.log("-----------------------------------------22" + doc);
+
         });
-        
+
 
         res.status(200).json({
           status: true,
+          message: "session ended successfully"
 
         });
       } catch (err) {
@@ -254,16 +255,14 @@ exports.getAllSessions = [
 
   async (req, res) => {
     try {
-     
+
 
       try {
-        console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++inside inner try block");
+
 
 
         let data = await showAllSessionmodel.find({}, (error, doc) => {
 
-          console.log("-----------------------------------------22" + doc);
-          console.log("---------------------------------------3--22" + error);
         });
 
 

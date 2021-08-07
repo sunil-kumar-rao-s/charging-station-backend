@@ -11,7 +11,7 @@ const Charging_SessionSchema = new Schema({
     consumption: { type: Number, required: true, default:0 },
     sessionId: { type: String, required: true, unique: true},
     hostId: { type: String, required: true },
-    chargedAmount: { type: String, required: true, default: "not yet received" },
+    chargedAmount: { type: String, required: true, default: "0" },
     isSessionActive: { type:String, required: true,default:"True"},
     ratings: { type:String, required: true,default:"0"},
     reviews: { type:String, required: true,default:"no reviews"}

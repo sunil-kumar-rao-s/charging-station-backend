@@ -110,6 +110,8 @@ exports.endSession = [
   sanitizeBody("sessionId").trim(),
   sanitizeBody("endMeterReading").trim(),
   sanitizeBody("consumption").trim(),
+  sanitizeBody("ratings").trim(),
+  sanitizeBody("reviews").trim(),
   
 
   async (req, res) => {
@@ -125,9 +127,9 @@ exports.endSession = [
         //sessionId: req.body.sessionId,
         consumption: req.body.consumption,
         chargedAmount: req.body.consumption * 10,
-        isSessionActive: "False"
-
-
+        isSessionActive: "False",
+        ratings: req.body.ratings,
+        reviews: req.body.reviews,
       });
 
 
@@ -141,7 +143,9 @@ exports.endSession = [
             consumption: req.body.consumption,
             chargedAmount: req.body.consumption * 10,
             isSessionActive: "False",
-            endTime: Date.now()
+            endTime: Date.now(),
+            ratings: req.body.ratings,
+            reviews: req.body.reviews,
           }
         }, {
           upsert: true

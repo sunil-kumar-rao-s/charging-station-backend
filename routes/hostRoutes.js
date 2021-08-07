@@ -17,12 +17,12 @@ router.post('/addhost', hostController.createHost);
 router.post('/login', hostController.login);
 //router.get('/getbookings', hostController.getBookings);
 router.get('/getprofile',common.checkHost, hostController.getProfile);
-router.post('/updateprofile',common.checkHost, hostController.updateProfile);
-router.post('/issues',common.checkHost, hostController.hostIssues);
+router.post('/updateprofile',common.postcheckHost, hostController.updateProfile);
+router.post('/issues',common.postcheckHost, hostController.hostIssues);
 router.get('/getissues',common.checkHost, hostController.getAllHostIssues);
-router.post('/updatespecificportstatus',common.checkHost, hostController.updateSpecificPortStatus);
+router.post('/updatespecificportstatus',common.postcheckHost, hostController.updateSpecificPortStatus);
 router.get('/getallports',common.checkHost, hostController.getChargingPointList);
 router.get('/showallhostsessions',common.checkHost, hostController.showAllHostSessions);
 router.get('/getallhosttransactions',common.checkHost, hostController.showAllHostTransactions); //not being called
-router.post('/updatestationstatus',common.checkHost,hostController.updateStationStatus);
+router.post('/updatestationstatus',common.postcheckHost,hostController.updateStationStatus);
 module.exports = router;

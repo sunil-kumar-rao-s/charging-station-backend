@@ -486,13 +486,13 @@ exports.sendOtp = [
             console.log(err),
             res.status(200).json({
               status: false,
-              message: "couldnt save otp"
+              message: "couldnt send OTP"
             });
           } else {
             console.log("Doc : ", docs),
             res.status(200).json({
               status: true,
-              message: "new data inserted",
+              message: "OTP sent successfully",
               data1
             });
           }

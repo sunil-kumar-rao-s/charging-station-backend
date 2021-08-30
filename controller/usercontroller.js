@@ -30,6 +30,7 @@ exports.createUser = [
   sanitizeBody("phone").trim(),
   sanitizeBody("city").trim(),
   sanitizeBody("password").trim(),
+  sanitizeBody("isVerified").trim(),
   async (req, res) => {
     try {
       let mobileNumberData = await User.findOne({
@@ -49,7 +50,8 @@ exports.createUser = [
           email: req.body.email,
           phone: req.body.phone,
           city: req.body.city,
-          password: req.body.password
+          password: req.body.password,
+          isVerified: req.body.isVerified,
         });
         try {
           const data = await user.save();
@@ -58,6 +60,7 @@ exports.createUser = [
             data
           });
         } catch (err) {
+          console.log(err);
           res.status(200).json({
             status: false,
             message: "Email or mobile number already exsist."
@@ -150,14 +153,12 @@ exports.updateProfile = [
   sanitizeBody("id").trim(),
   sanitizeBody("userName").trim(),
   sanitizeBody("email").trim(),
-  sanitizeBody("phone").trim(),
   sanitizeBody("city").trim(),
   async (req, res) => {
     console.log("update profile called");
     let updateValue = {
       userName: req.body.userName,
       email: req.body.email,
-      phone: req.body.phone,
       city: req.body.city
     };
     try {

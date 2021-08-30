@@ -9,7 +9,8 @@ const chargingSessionModel = require("../schema/chargingSession");
 const userModel = require("../schema/usermodal");
 const showSessionmodel = require("../schema/chargingSession");
 const showAllSessionmodel = require("../schema/chargingSession");
-const portModel = require("../schema/chargingpointmodel");
+
+const portModel = require("../schema/charginingport");
 const {
   Mongoose
 } = require("mongoose");
@@ -20,10 +21,14 @@ exports.startSession = [
   sanitizeBody("userId").trim(),
   sanitizeBody("startMeterReading").trim(),
   sanitizeBody("hostId").trim(),
+  sanitizeBody("timer").trim(),
 
   async (req, res) => {
     try {
       console.log("------------------------------------------------------------------------------------------------------in sessionstahfkjgdsahkfgdksgfdsgdrt");
+
+      
+
 
       const sid = Date.now() + req.body.uid + req.body.userId;
       const startSession = new chargingSessionModel({
@@ -32,7 +37,8 @@ exports.startSession = [
         startMeterReading: req.body.startMeterReading,
         startTime: Date.now(),
         sessionId: sid,
-        hostId: req.body.hostId
+        hostId: req.body.hostId,
+        timer: req.body.timer
 
 
       });
@@ -52,10 +58,19 @@ exports.startSession = [
         };
         const updateValue1 = {
 
-          isOnline: false
+          isOnline: "false"
         };
-        console.log(updateValue);
+      
 
+        portModel.findOneAndUpdate({
+          _id: req.body.uid
+        }, {
+          $set: updateValue1
+        }, (error, doc) => {
+
+          console.log("+++++++++++++++" + doc);
+
+        });
 
         userModel.findOneAndUpdate({
           _id: req.body.userId
@@ -70,16 +85,7 @@ exports.startSession = [
 
         const data = await startSession.save();
 
-        portModel.findOneAndUpdate({
-          _id: req.body.uid
-        }, {
-          $set: updateValue1
-        }, {
-          new: true
-        }, (error, doc) => {
-
-
-        });
+        
 
 
         res.status(200).json({
@@ -87,11 +93,33 @@ exports.startSession = [
           data
         });
       } catch (err) {
+        console.log(err);
         res.status(400).json({
           status: false,
-          message: "Cannot create the session, please try again"
+          message: "Cannot create the session, please try again.."
         });
       }
+      setTimeout(function(){
+
+        let updateValue = {
+         isOnline:"true"
+        };
+        try {
+          console.log("inside timer try");
+           let tim = portModel.findOneAndUpdate({
+            _id: req.body.uid 
+          }, {
+            $set: updateValue
+          });
+          console.log("-----------------------------------------------exec"+ tim);
+         
+        } catch (err) {
+         console.log(err);
+        }
+
+
+
+      },req.body.timer);
 
     } catch (err) {
       res.status(400).json({
@@ -157,7 +185,7 @@ exports.endSession = [
 
         const updateValue1 = {
 
-          isOnline: true
+          isOnline: 'true'
         };
 
 

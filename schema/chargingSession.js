@@ -14,7 +14,9 @@ const Charging_SessionSchema = new Schema({
     chargedAmount: { type: String, required: true, default: "0" },
     isSessionActive: { type:String, required: true,default:"True"},
     ratings: { type:String, required: true,default:"0"},
-    reviews: { type:String, required: true,default:"no reviews"}
+    reviews: { type:String, required: true,default:"no reviews"},
+    timer:{type:String,required:true}
+
 },{
     timestamps:true,
 });

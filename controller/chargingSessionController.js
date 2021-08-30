@@ -101,17 +101,21 @@ exports.startSession = [
       }
       setTimeout(function(){
 
-        let updateValue = {
+        let timerValue = {
          isOnline:"true"
         };
         try {
-          console.log("inside timer try");
-           let tim = portModel.findOneAndUpdate({
-            _id: req.body.uid 
+          console.log("inside timer try" + timerValue);
+          portModel.findOneAndUpdate({
+            _id: req.body.uid
           }, {
-            $set: updateValue
+            isOnline: "true"
+          }, (error, doc) => {
+  
+            console.log("++++++++++---------+++++" + doc);
+  
           });
-          console.log("-----------------------------------------------exec"+ tim);
+         
          
         } catch (err) {
          console.log(err);

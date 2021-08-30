@@ -42,7 +42,7 @@ exports.createUser = [
       if (mobileNumberData) {
         res.status(409).json({
           status: false,
-          message: "Email or Mobile number already exsist"
+          message: "Email or Mobile number already exist"
         });
       } else {
         const user = new User({
@@ -63,14 +63,14 @@ exports.createUser = [
           console.log(err);
           res.status(200).json({
             status: false,
-            message: "Email or mobile number already exsist."
+            message: "Email or mobile number already exist."
           });
         }
       }
     } catch (err) {
       res.status(200).json({
         status: false,
-        message: "Email or mobile number already exsist"
+        message: "Email or mobile number already exist"
       });
     }
   }
@@ -493,7 +493,7 @@ exports.sendOtp = [
             res.status(200).json({
               status: true,
               message: "OTP sent successfully",
-              data1
+              
             });
           }
         });
@@ -511,12 +511,12 @@ exports.sendOtp = [
           const data = await phoneotp.save();
           res.status(200).json({
             status: true,
-            data
+            
           });
         } catch (err) {
           res.status(200).json({
             status: false,
-            message: "couldnt save otp"
+            message: "couldnt send OTP"
           });
         }
       }

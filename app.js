@@ -24,15 +24,7 @@ var app = express();
 
 app.use(cors())
 
-//TEST
 
-//mongoose.connect('mongodb+srv://pavan:Pavan123@cluster0.bcifb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
-
-
-//PROD
-//mongoose.connect('mongodb+srv://admin:vechicle123@cluster0.z047r.mongodb.net/electric?retryWrites=true&w=majority', { useNewUrlParser: true });
-
-//sunil test db
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, '\n connection error:'));

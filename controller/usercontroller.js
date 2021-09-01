@@ -15,13 +15,13 @@ const jwt = require("jsonwebtoken");
 const Howisitwork = require("../schema/Howisitwork");
 const OtpSchema = require("../schema/otpmodel");
 const Notification = require("../schema/notification");
-const accountSid = 'AC17f72be12091f22b27425f1a4352a5bc';
-const authToken = 'e5e40c0109c9c904fb1cdafb4df1604d';
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
 var instance = new Razorpay({
-  key_id: "rzp_test_6E8SjivqQhV3be",
-  key_secret: "eiI39u9wq0z1PgCDnWEFwJr4"
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
 exports.createUser = [

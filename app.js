@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -18,6 +19,7 @@ const cors = require('cors');
 var hostRouter = require('./routes/hostRoutes');
 
 
+
 var app = express();
 
 app.use(cors())
@@ -31,7 +33,7 @@ app.use(cors())
 //mongoose.connect('mongodb+srv://admin:vechicle123@cluster0.z047r.mongodb.net/electric?retryWrites=true&w=majority', { useNewUrlParser: true });
 
 //sunil test db
-mongoose.connect('mongodb+srv://sunil:$unil007@cluster0.bf37g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, '\n connection error:'));
 db.once('open', () => {console.log('db connected successfully');});

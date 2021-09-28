@@ -18,7 +18,7 @@ const Notification = require("../schema/notification");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
-const browser = require('browser-detect');
+
 
 
 
@@ -44,7 +44,7 @@ exports.createUser = [
         }]
       });
       if (mobileNumberData) {
-        res.status(409).json({
+        res.status(203).json({
           status: false,
           message: "Email or Mobile number already exist"
         });

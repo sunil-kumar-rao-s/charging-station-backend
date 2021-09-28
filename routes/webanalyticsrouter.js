@@ -9,4 +9,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 console.log("inside web router");
 router.get('/getdetails',webanalyticscontroller.getDetails);
+router.post('/emailsub',webanalyticscontroller.emailsub);
 module.exports = router;

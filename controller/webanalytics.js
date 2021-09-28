@@ -2,7 +2,7 @@ const { body, validationResult } = require("express-validator");
 const { sanitizeBody } = require("express-validator/filter");
 const { findOneAndUpdate } = require("../schema/usermodal");
 const browser = require('browser-detect');
-const WebAnalytics = require('../schema/webanalytics');
+const emailsub = require('../schema/emailsub');
 
 exports.getDetails = [
  
@@ -55,5 +55,36 @@ exports.getDetails = [
 
       }
     
+  
+  ];
+
+
+exports.emailsub = [
+      sanitizeBody("email"),
+ 
+    async (req, res) => {
+        try{
+            
+            const emaildata = new emailsub({
+                email:req.body.email
+
+            });
+
+           let data = await emaildata.save();
+            res.status(200).json({
+                status: true,
+                
+              });
+        }
+        catch{
+            res.status(400).json({
+                status: false,
+                
+              });
+
+
+        }
+      
+    }
   
   ];

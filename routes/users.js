@@ -13,13 +13,14 @@ router.get('/', function(req, res, next) {
 
 router.post('/adduser',useController.createUser);
 router.post('/login',useController.login);
-router.get('/viewprofile', useController.getProfile);
-router.post('/updateprofile', useController.updateProfile);
-router.post('/changepassword', useController.updatePassword)
-router.post('/updatewallet', useController.updateWallet);
-router.post('/transcationhistory',useController.getTranscationDetails);
-router.post('/getstaticpage',useController.getStaticPage);
-router.post('/getnotifications',useController.getNotification);
+router.get('/viewprofile',common.checkUser, useController.getProfile);
+router.post('/updateprofile',common.checkUser, useController.updateProfile);
+router.post('/changepassword',common.checkUser, useController.updatePassword)
+router.post('/updatewallet',common.checkUser, useController.updateWallet);
+router.post('/transcationhistory',common.checkUser,useController.getTranscationDetails);
+router.post('/getstaticpage',common.checkUser,useController.getStaticPage);
+router.post('/getnotifications',common.checkUser,useController.getNotification);
 router.post('/sendotp',useController.sendOtp);
 router.post('/otpauth',useController.otpAuth);
+router.get('/getip', useController.getIp);
 module.exports = router;

@@ -323,3 +323,45 @@ exports.getAllSessions = [
   }
 
 ];
+
+exports.getChargerdetails = [
+
+  sanitizeBody("qrId").trim(),
+
+
+  async (req, res) => {
+    try {
+
+      let data = await portModel.findOne(
+        {qrId: req.body.qrId});
+        
+          if(data==null){
+            res.status(400).json({
+              status: false,
+              message: "qrId invalid or not found"
+              
+          });
+          }
+          else{
+            res.status(200).json({
+              status: true,
+              message: "success",
+              data
+            
+          });
+          }
+        
+      
+
+     
+
+    } catch (err) {
+      res.status(400).json({
+        status: false,
+        message: "Something went wrong, please check again"
+      });
+
+    }
+  }
+
+];

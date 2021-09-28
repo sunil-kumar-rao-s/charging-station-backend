@@ -16,10 +16,11 @@ exports.addChargingPort = [
   sanitizeBody("hostId").trim(),
   sanitizeBody('description').trim(),
   sanitizeBody("isOnline").trim(),
+  sanitizeBody("qrId").trim(),
   async (req, res) => {
     const ports = new charginingPorts({
       chargingstationId: req.body.chargingstationId,
-      
+      qrId: req.body.qrId,
       chargerType: req.body.chargerType,
       maxChargingSpeed: req.body.maxChargingSpeed,
       hostId: req.body.hostId,

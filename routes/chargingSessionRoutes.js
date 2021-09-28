@@ -13,8 +13,9 @@ router.get('/', function(req, res, next) {
     res.send('ChargingSession routes called');
   });
   
-  router.post('/start_session', chargingSessionController.startSession);
-  router.post('/end_session', chargingSessionController.endSession);
-  router.post('/show_my_session', chargingSessionController.showAllUserSessions);
+  router.post('/start_session',common.checkUser, chargingSessionController.startSession);
+  router.post('/end_session',common.checkUser, chargingSessionController.endSession);
+  router.post('/show_my_session',common.checkUser, chargingSessionController.showAllUserSessions);
   router.post('/show_allusersessions', common.checkAdmin, chargingSessionController.getAllSessions);
+  router.post('/getchargerdetails',common.checkUser,chargingSessionController.getChargerdetails);
   module.exports = router;

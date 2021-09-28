@@ -569,3 +569,34 @@ exports.otpAuth = [
     }
   }
 ];
+
+exports.getIp = [
+ 
+  async (req, res) => {
+    try {
+      console.log("++++++++++++++++++++=inside try");
+      const parseIp = (req) =>
+    req.headers['x-forwarded-for']?.split(',').shift()
+    || req.socket?.remoteAddress;
+
+console.log(parseIp(req))
+
+        res.status(200).json({
+        status: true,
+        message: "Something went wrong"
+
+     
+      });
+    }
+
+    catch (err) {
+
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+
+       });
+      }
+    }
+
+];

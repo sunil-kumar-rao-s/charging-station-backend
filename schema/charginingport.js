@@ -9,6 +9,7 @@ const CharginingPortSchema = new Schema({
     maxChargingSpeed: {type: Number, required: true},
     description: {type: String, required: true},
     hostId: { type: String, required: true },
+    qrId:{type:String,required:true},
 });
 
 module.exports = mongoose.model("Chargingport", CharginingPortSchema);

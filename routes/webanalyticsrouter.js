@@ -1,0 +1,12 @@
+var express = require("express");
+var router = express.Router();
+const bodyParser = require("body-parser");
+const webanalyticscontroller = require('../controller/webanalytics');
+
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+
+console.log("inside web router");
+router.get('/getdetails',webanalyticscontroller.getDetails);
+module.exports = router;

@@ -11,4 +11,4 @@ const webanalyticsschema = new Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model('Watchlist', WatchListSchema);
+module.exports = mongoose.model('webanalytics', webanalyticsschema);

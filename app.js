@@ -17,6 +17,7 @@ const createError = require('http-errors');
 const mongoose = require('mongoose');
 const cors = require('cors');
 var hostRouter = require('./routes/hostRoutes');
+var webAnalyticsrouter = require('./routes/webanalyticsrouter');
 
 
 
@@ -54,6 +55,7 @@ app.use('/watchlist', watchlistRouter);
 app.use('/order', orderRouter);
 app.use('/session', chargingSessionRouter);
 app.use('/host', hostRouter);
+app.use('/webanalytics', webAnalyticsrouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

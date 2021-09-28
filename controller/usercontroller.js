@@ -18,6 +18,10 @@ const Notification = require("../schema/notification");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
+const browser = require('browser-detect');
+
+
+
 
 var instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -580,6 +584,9 @@ exports.getIp = [
                 req.socket.remoteAddress ||
                 req.connection.socket.remoteAddress;
                 console.log(IPs);
+                const result = browser();
+ 
+                console.log(result);
             if (IPs.indexOf(":") !== -1) {
                 IPs = IPs.split(":")[IPs.split(":").length - 1]
             }

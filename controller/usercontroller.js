@@ -121,13 +121,13 @@ exports.login = [
           data: data
         });
       } else {
-        res.status(410).json({
+        res.status(203).json({
           status: false,
           message: "invalid username or password"
         });
       }
     } catch (err) {
-      res.status(410).json({
+      res.status(203).json({
         status: false,
         message: "invalid username or password"
       });
@@ -574,28 +574,3 @@ exports.otpAuth = [
   }
 ];
 
-exports.getIp = [
- 
-  async (req, res) => {
-    
-        try {
-            var IPs = req.headers['x-forwarded-for'] ||
-                req.connection.remoteAddress ||
-                req.socket.remoteAddress ||
-                req.connection.socket.remoteAddress;
-                console.log(IPs);
-                const result = browser();
- 
-                console.log(result);
-            if (IPs.indexOf(":") !== -1) {
-                IPs = IPs.split(":")[IPs.split(":").length - 1]
-            }
-           
-            return res.json({ IP: IPs.split(",")[0] });
-        } catch (err) {
-            return res.json({ message: 'got error' });
-        }
-    }
-  
-
-];

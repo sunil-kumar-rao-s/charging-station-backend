@@ -22,5 +22,5 @@ router.post('/getstaticpage',common.checkUser,useController.getStaticPage);
 router.post('/getnotifications',common.checkUser,useController.getNotification);
 router.post('/sendotp',useController.sendOtp);
 router.post('/otpauth',useController.otpAuth);
-router.get('/getip', useController.getIp);
+
 module.exports = router;

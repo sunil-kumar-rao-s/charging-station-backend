@@ -573,28 +573,22 @@ exports.otpAuth = [
 exports.getIp = [
  
   async (req, res) => {
-    try {
-      console.log("++++++++++++++++++++=inside try");
-      const data = req.connection.remoteAddress;
-console.log(data);
-
-        res.status(200).json({
-        status: true,
-        message: "Something went wrong"
-        
-
-     
-      });
+    
+        try {
+            var IPs = req.headers['x-forwarded-for'] ||
+                req.connection.remoteAddress ||
+                req.socket.remoteAddress ||
+                req.connection.socket.remoteAddress;
+                console.log(IPs);
+            if (IPs.indexOf(":") !== -1) {
+                IPs = IPs.split(":")[IPs.split(":").length - 1]
+            }
+           
+            return res.json({ IP: IPs.split(",")[0] });
+        } catch (err) {
+            return res.json({ message: 'got error' });
+        }
     }
-
-    catch (err) {
-
-      res.status(500).json({
-        status: false,
-        message: "Something went wrong"
-
-       });
-      }
-    }
+  
 
 ];

@@ -576,7 +576,7 @@ exports.getIp = [
     try {
       console.log("++++++++++++++++++++=inside try");
       const parseIp = (req) =>
-    req.headers['x-forwarded-for']?.split(',').shift()
+    req.headers['x-forwarded-for']
     || req.socket?.remoteAddress;
 
 console.log(parseIp(req))

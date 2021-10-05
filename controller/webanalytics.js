@@ -3,6 +3,8 @@ const { sanitizeBody } = require("express-validator/filter");
 const { findOneAndUpdate } = require("../schema/usermodal");
 const browser = require('browser-detect');
 const emailsub = require('../schema/emailsub');
+const hostSchema = require('../schema/hostform');
+const investorSchema = require('../schema/investorform');
 
 exports.getDetails = [
  
@@ -64,11 +66,12 @@ exports.emailsub = [
  
     async (req, res) => {
         try{
-            
+            console.log(req.body.email);
             const emaildata = new emailsub({
                 email:req.body.email
 
             });
+            console.log(req.body.email);
 
            let data = await emaildata.save();
             res.status(200).json({
@@ -79,7 +82,7 @@ exports.emailsub = [
         catch{
             res.status(400).json({
                 status: false,
-                
+               
               });
 
 
@@ -88,3 +91,91 @@ exports.emailsub = [
     }
   
   ];
+
+  exports.hostForm = [
+    sanitizeBody("email"),
+    sanitizeBody("name"),
+    sanitizeBody("address"),
+    sanitizeBody("city"),
+    sanitizeBody("userstate"),
+    sanitizeBody("businesstype"),
+    sanitizeBody("mobile"),
+
+  async (req, res) => {
+      try{
+          console.log(req.body.email);
+          const hostdata = new hostSchema({
+              email:req.body.email,
+              name:req.body.name,
+              address:req.body.address,
+              city:req.body.city,
+              state:req.body.userstate,
+              businesstype:req.body.businesstype,
+              mobile:req.body.mobile
+
+          });
+          console.log(req.body.email);
+
+         let data = await hostdata.save();
+          res.status(200).json({
+              status: true,
+              message: "request submitted successfully"
+              
+            });
+      }
+      catch(error){
+        console.log(error);
+          res.status(400).json({
+              status: false,
+              message:"Something went wrong, please try again!!!"
+             
+            });
+
+
+      }
+    
+  }
+
+];
+
+exports.investorform = [
+  sanitizeBody("email"),
+  sanitizeBody("name"),
+  sanitizeBody("comments"),
+  sanitizeBody("mobile"),
+  
+
+async (req, res) => {
+    try{
+        console.log(req.body.email);
+        const investordata = new investorSchema({
+            email:req.body.email,
+            name:req.body.name,
+            comments:req.body.comments,
+           
+            mobile:req.body.mobile
+
+        });
+        console.log(req.body);
+
+       let data = await investordata.save();
+        res.status(200).json({
+            status: true,
+            message: "request submitted successfully"
+            
+          });
+    }
+    catch(error){
+      console.log(error);
+        res.status(400).json({
+            status: false,
+            message:"Something went wrong, please try again!!!"
+           
+          });
+
+
+    }
+  
+}
+
+];

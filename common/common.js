@@ -5,6 +5,7 @@ const Host = require('../schema/hostmodel');
 exports.checkAdmin = async (req, res, next) => {
   try {
     let data = await Admin.findOne({ _id: req.body.adminId });
+    console.log(data);
     if (data) {
       next();
     } else {
@@ -25,6 +26,7 @@ exports.checkAdmin = async (req, res, next) => {
 exports.checkUser = async (req, res, next) => {
   try {
     let data = await User.findOne({ _id: req.body.userId });
+    console.log(req.body.userId);
     if (data) {
       next();
     } else {

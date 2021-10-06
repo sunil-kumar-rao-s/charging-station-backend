@@ -12,7 +12,8 @@ const UserSchema = new Schema(
     userStatus: {type: String, default: true},
     walletAmount: {type: Number, default: 0},
     currentSessionId: {type: String, default:"not assigned"},
-    isVerified: {type:String,default:"false"}
+    isVerified: {type:String,default:"false"},
+    Key: {type:String,default:"null"}
      
   },
   {

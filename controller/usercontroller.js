@@ -574,3 +574,104 @@ exports.otpAuth = [
   }
 ];
 
+exports.forgotPassword = [
+  
+  sanitizeBody("phone").trim(),
+  sanitizeBody("newPassword").trim(),
+  sanitizeBody("Key").trim(),
+  async (req, res) => {
+    try {
+      let data = await User.findOneAndUpdate({
+        phone: req.body.phone,
+        Key: req.body.Key
+      }, {
+        $set: {
+          password: req.body.newPassword
+        }
+      }, {
+        new: true
+      });
+      console.log(data);
+      
+        if (data) {
+          res.status(200).json({
+            status: true,
+            message: "password updated successfully"
+          });
+        } else {
+          res.status(500).json({
+            status: false,
+            message: "couldn't update password!!!"
+          });
+        }
+      
+    } catch (err) {
+      console.log(err);
+      res.status(404).json({
+        status: false,
+        message: "user id or Key mismatch"
+      });
+    }
+  }
+];
+
+exports.otpAuth2 = [
+  sanitizeBody("otp"),
+  sanitizeBody("phone"),
+  async (req, res) => {
+    try {
+
+
+      let data = await OtpSchema.findOne({
+        phone: req.body.phone,
+        otp: req.body.otp
+
+      });
+      console.log(data);
+
+      let newKey = '';
+      for (let i = 0; i < 10; i++) {
+        newKey += [Math.floor(Math.random() * 10)];
+      }
+
+      let userdata = await User.findOneAndUpdate({
+        phone: req.body.phone
+      }, {
+        $set: {
+          Key: newKey
+        }
+      }, {
+        new: true
+      });
+      if(userdata){
+        console.log("found+++++++++++++++++++++++++++++");
+        
+      }
+      else{
+        console.log("____________________________notfound");
+      }
+     
+
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "otp auth successful",
+          Key: newKey
+        });
+      } else {
+        res.status(401).json({
+          status: true,
+          message: "OTP mismatch",
+          data
+        });
+      }
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];

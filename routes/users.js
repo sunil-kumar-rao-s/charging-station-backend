@@ -15,12 +15,15 @@ router.post('/adduser',useController.createUser);
 router.post('/login',useController.login);
 router.get('/viewprofile', useController.getProfile);
 router.post('/updateprofile', useController.updateProfile);
-router.post('/changepassword', useController.updatePassword)
+router.post('/changepassword', useController.updatePassword);
 router.post('/updatewallet', useController.updateWallet);
 router.post('/transcationhistory',useController.getTranscationDetails);
 router.post('/getstaticpage',useController.getStaticPage);
 router.post('/getnotifications',useController.getNotification);
 router.post('/sendotp',useController.sendOtp);
 router.post('/otpauth',useController.otpAuth);
+router.post('/forogtpassword', useController.forgotPassword);
+router.post('/otpauth2',useController.otpAuth2);
+
 
 module.exports = router;

@@ -683,10 +683,10 @@ exports.otpAuth2 = [
           Key: newKey
         });
       } else {
-        res.status(401).json({
+        res.status(203).json({
           status: true,
           message: "OTP mismatch",
-          data
+          
         });
       }
 

@@ -23,7 +23,7 @@ router.post('/getnotifications',useController.getNotification);
 router.post('/sendotp',useController.sendOtp);
 router.post('/otpauth',useController.otpAuth);
 router.post('/forogtpassword', useController.forgotPassword);
-router.post('/otpauth2',useController.otpAuth2);
+router.post('/otpvalidateforgetpass',useController.otpAuth2);
 
 
 module.exports = router;

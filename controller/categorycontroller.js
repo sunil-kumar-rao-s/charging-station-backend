@@ -84,7 +84,7 @@ exports.getSubCategoryList = [
         subCategory: subCategoryList
       });
     } catch (err) {
-      res.status(500).json({
+        res.status(500).json({
         status: false,
         message: "something went wrong. please try again later"
       });

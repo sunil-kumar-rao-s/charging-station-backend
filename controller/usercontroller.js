@@ -18,6 +18,7 @@ const Notification = require("../schema/notification");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
+const Userlogins = require("../schema/userlogins");
 
 
 
@@ -84,6 +85,8 @@ exports.login = [
   sanitizeBody("email").trim(),
   sanitizeBody("phone").trim(),
   sanitizeBody("password").trim(),
+  sanitizeBody("deviceId").trim(),
+  sanitizeBody("deviceType").trim(),
   async (req, res) => {
     try {
       let data = await User.findOne({
@@ -100,6 +103,27 @@ exports.login = [
         ]
       }).select("-password");
       if (data) {
+
+        const devicedata = new Userlogins({
+
+          userId: data._id,
+          deviceId: req.body.deviceId,
+          deviceType: req.body.deviceType,
+          userName: data.userName,
+          email: data.email,
+          phone: data.phone,
+
+        });
+        
+        devicedata.save(function(err,docs){
+          if(err){
+            console.log(err);
+          }
+          else{
+            console.log(docs);
+          }
+        });
+
         let lastDate = Date.now();
         let lastloginDate = {
           lastActiveAt: lastDate

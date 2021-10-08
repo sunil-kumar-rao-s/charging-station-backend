@@ -22,7 +22,7 @@ router.post('/getstaticpage',useController.getStaticPage);
 router.post('/getnotifications',useController.getNotification);
 router.post('/sendotp',useController.sendOtp);
 router.post('/otpauth',useController.otpAuth);
-router.post('/forogtpassword', useController.forgotPassword);
+router.post('/forgotpassword', useController.forgotPassword);
 router.post('/otpvalidateforgetpass',useController.otpAuth2);
 
 

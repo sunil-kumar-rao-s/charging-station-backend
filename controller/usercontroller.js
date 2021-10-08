@@ -582,8 +582,8 @@ exports.otpAuth = [
           data
         });
       } else {
-        res.status(401).json({
-          status: true,
+        res.status(203).json({
+          status: false,
           message: "OTP mismatch",
           data
         });
@@ -684,7 +684,7 @@ exports.otpAuth2 = [
         });
       } else {
         res.status(203).json({
-          status: true,
+          status: false,
           message: "OTP mismatch",
           
         });

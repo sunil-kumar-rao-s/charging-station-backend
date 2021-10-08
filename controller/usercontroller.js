@@ -47,7 +47,7 @@ exports.createUser = [
       if (mobileNumberData) {
         res.status(203).json({
           status: false,
-          message: "Email or Mobile number already exist"
+          message: "Email or Phone number already exist"
         });
       } else {
         const user = new User({
@@ -68,14 +68,14 @@ exports.createUser = [
           console.log(err);
           res.status(200).json({
             status: false,
-            message: "Email or mobile number already exist."
+            message: "Email or Phone number already exist."
           });
         }
       }
     } catch (err) {
       res.status(200).json({
         status: false,
-        message: "Email or mobile number already exist"
+        message: "Email or Phone number already exist"
       });
     }
   }
@@ -147,13 +147,13 @@ exports.login = [
       } else {
         res.status(203).json({
           status: false,
-          message: "invalid username or password"
+          message: "invalid Phone number or password"
         });
       }
     } catch (err) {
       res.status(203).json({
         status: false,
-        message: "invalid username or password"
+        message: "invalid Phone number or password"
       });
     }
   }
@@ -213,7 +213,7 @@ exports.updateProfile = [
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Email or mobile number already exsist with another user"
+        message: "Email or Phone number already exsist with another user"
       });
     }
   }

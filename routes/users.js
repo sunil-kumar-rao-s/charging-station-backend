@@ -7,6 +7,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const useController = require('../controller/usercontroller')
 const common = require("../common/common");
 
+
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
@@ -25,6 +26,7 @@ router.post('/otpauth',useController.otpAuth);
 router.post('/forgotpassword', useController.forgotPassword);
 router.post('/otpvalidateforgetpass',useController.otpAuth2);
 router.post('/call',useController.call);
+
 
 
 

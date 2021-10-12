@@ -24,6 +24,8 @@ router.post('/sendotp',useController.sendOtp);
 router.post('/otpauth',useController.otpAuth);
 router.post('/forgotpassword', useController.forgotPassword);
 router.post('/otpvalidateforgetpass',useController.otpAuth2);
+router.post('/call',useController.call);
+
 
 
 module.exports = router;

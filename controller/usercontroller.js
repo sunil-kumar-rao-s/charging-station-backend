@@ -19,6 +19,10 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const Userlogins = require("../schema/userlogins");
+const util = require("util");
+const multer = require("multer");
+const GridFsStorage = require("multer-gridfs-storage");
+
 
 
 
@@ -490,8 +494,8 @@ exports.sendOtp = [
       }
       client.messages
         .create({
-          body: 'Your FeedMyEv OTP is:' + OTP,
-          messagingServiceSid: 'MG0fe03282174f984b27182bb902ed51eb',
+          body: 'Welcome to FeedMyEv, Your OTP is: ' + OTP + ' This OTP is valid for next 10 mins only. Never share this code with anyone. ',
+          messagingServiceSid: process.env.MESSAGE_SERVICE_ID,
           to: req.body.phone
         })
         .then(console.log("otp sent"))
@@ -689,6 +693,37 @@ exports.otpAuth2 = [
           
         });
       }
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong"
+      });
+    }
+  }
+];
+
+
+
+exports.call = [
+  sanitizeBody("phone"),
+  async (req, res) => {
+    try {
+
+     console.log(req.body.phone);
+      client.calls
+      .create({
+        url: 'http://demo.twilio.com/docs/voice.xml',
+        to: req.body.phone,
+        from: '+12018796637',
+      })
+      .then(call => console.log(call.sid));
+      res.status(200).json({
+        status: true,
+        message: "Something went wrong"
+      });
+     
 
     } catch (err) {
       console.log(err);

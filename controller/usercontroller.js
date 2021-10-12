@@ -20,8 +20,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const Userlogins = require("../schema/userlogins");
 const util = require("util");
-const multer = require("multer");
-const GridFsStorage = require("multer-gridfs-storage");
+
 
 
 

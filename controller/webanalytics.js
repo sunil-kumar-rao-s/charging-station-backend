@@ -42,16 +42,17 @@ exports.getDetails = [
                     });
                   } catch (err) {
                     console.log(err);
-                    res.status(200).json({
+                    res.status(203).json({
                       status: false,
-                      message: "."
+                      message: "something went wrong"
                     });
                   }
                 
               } catch (err) {
-                res.status(200).json({
+                console.log(err);
+                res.status(500).json({
                   status: false,
-                  message: "something went wrong"
+                  message: "Internal server error"
                 });
               }
 

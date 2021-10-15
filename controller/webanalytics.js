@@ -5,6 +5,7 @@ const browser = require('browser-detect');
 const emailsub = require('../schema/emailsub');
 const hostSchema = require('../schema/hostform');
 const investorSchema = require('../schema/investorform');
+const WebAnalytics = require('../schema/webanalytics');
 
 exports.getDetails = [
  

@@ -50,7 +50,7 @@ exports.createUser = [
       if (mobileNumberData) {
         res.status(203).json({
           status: false,
-          message: "Email or Phone number already exist"
+          message: "Email or Phone number already exist....."
         });
       } else {
         const user = new User({
@@ -76,6 +76,7 @@ exports.createUser = [
         }
       }
     } catch (err) {
+      console.log(err);
       res.status(200).json({
         status: false,
         message: "Email or Phone number already exist"
@@ -93,70 +94,58 @@ exports.login = [
   async (req, res) => {
     try {
       let data = await User.findOne({
-        $and: [{
-            password: req.body.password
-          },
-          {
-            $or: [{
-              phone: req.body.phone
-            }, {
-              email: req.body.email
-            }]
-          }
-        ]
-      }).select("-password");
-      if (data) {
+        phone: req.body.phone
+      }, (err, client) => {
+        if (err || !client) {
+          return res.status(400).json({
+            status: false,
+            message: "User Not Registered in Please Register",
+            data: {},
+          });
+        }
+        if (!client.autheticate(req.body.password)) {
+          console.log(req.body.password);
 
+          console.log(!client.autheticate(req.body.password));
+          return res.status(401).json({
+            status: false,
+            message: "Phone number and password do not match",
+            data: client,
+          });
+        }
         const devicedata = new Userlogins({
 
-          userId: data._id,
+          userId: client._id,
           deviceId: req.body.deviceId,
           deviceType: req.body.deviceType,
-          userName: data.userName,
-          email: data.email,
-          phone: data.phone,
+          userName: client.userName,
+          email: client.email,
+          phone: client.phone,
 
         });
-        
-        devicedata.save(function(err,docs){
-          if(err){
+
+        devicedata.save(function (err, docs) {
+          if (err) {
             console.log(err);
-          }
-          else{
+          } else {
             console.log(docs);
           }
         });
 
-        let lastDate = Date.now();
-        let lastloginDate = {
-          lastActiveAt: lastDate
-        };
-        let updateData = await User.findOneAndUpdate({
-          _id: data._id
-        }, {
-          $set: lastloginDate
-        }, {
-          new: true
-        });
-        const jwtToken = jwt.sign({
-          email: req.body.email
-        }, "accessToken");
-        console.log("accessToekn=====> ", jwtToken);
-        data.lastActiveAt = lastDate;
+
         res.status(200).json({
           status: true,
-          data: data
+          data: client
         });
-      } else {
-        res.status(203).json({
-          status: false,
-          message: "invalid Phone number or password"
-        });
-      }
+      });
+
+
+
     } catch (err) {
+      console.log(err);
       res.status(203).json({
         status: false,
-        message: "invalid Phone number or password"
+        message: "Something went Wrong"
       });
     }
   }
@@ -230,39 +219,30 @@ exports.updatePassword = [
     try {
       let data = await User.findOne({
         _id: req.body.id,
-        password: req.body.oldPassword
-      });
-      if (data) {
-        let newData = await User.updateOne({
-          _id: req.body.id
-        }, {
-          $set: {
-            password: req.body.newPassword
-          }
-        }, {
-          new: true
-        });
-        if (newData) {
-          res.status(200).json({
-            status: true,
-            message: "password updated successfully"
+
+      }, (err, client) => {
+
+        if (!client.autheticate(req.body.oldPassword)) {
+          return res.status(401).json({
+            status: false,
+            message: "Old Password Doesnt match",
+
           });
         } else {
-          res.status(500).json({
-            status: false,
-            message: "User already exist please try with diffrent email/phone or login"
+
+          client.password = req.body.newPassword;
+          client.save();
+          return res.status(200).json({
+            status: true,
+            message: "Password changed Successfully",
           });
         }
-      } else {
-        res.status(404).json({
-          status: false,
-          message: "user id or old password mismatch"
-        });
-      }
+      });
     } catch (err) {
-      res.status(404).json({
+      console.log(err);
+      res.status(500).json({
         status: false,
-        message: "user id or old password mismatch"
+        message: "Something went wrong!!!"
       });
     }
   }
@@ -493,6 +473,7 @@ exports.sendOtp = [
       }
       client.messages
         .create({
+
           body: 'Welcome to FeedMyEv, Your OTP is: ' + OTP + ' This OTP is valid for next 10 mins only. Never share this code with anyone. ',
           messagingServiceSid: process.env.MESSAGE_SERVICE_ID,
           to: req.body.phone
@@ -515,20 +496,20 @@ exports.sendOtp = [
         }, function (err, docs) {
           if (err) {
             console.log(err),
-            res.status(200).json({
-              status: false,
-              message: "couldnt send OTP"
-            });
+              res.status(200).json({
+                status: false,
+                message: "couldnt send OTP"
+              });
           } else {
             console.log("Doc : ", docs),
-            res.status(200).json({
-              status: true,
-              message: "OTP sent successfully",
-              
-            });
+              res.status(200).json({
+                status: true,
+                message: "OTP sent successfully",
+
+              });
           }
         });
-        
+
 
       } else {
 
@@ -542,7 +523,7 @@ exports.sendOtp = [
           const data = await phoneotp.save();
           res.status(200).json({
             status: true,
-            
+
           });
         } catch (err) {
           res.status(200).json({
@@ -602,7 +583,7 @@ exports.otpAuth = [
 ];
 
 exports.forgotPassword = [
-  
+
   sanitizeBody("phone").trim(),
   sanitizeBody("newPassword").trim(),
   sanitizeBody("Key").trim(),
@@ -619,19 +600,19 @@ exports.forgotPassword = [
         new: true
       });
       console.log(data);
-      
-        if (data) {
-          res.status(200).json({
-            status: true,
-            message: "password updated successfully"
-          });
-        } else {
-          res.status(500).json({
-            status: false,
-            message: "couldn't update password!!!"
-          });
-        }
-      
+
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: "password updated successfully"
+        });
+      } else {
+        res.status(500).json({
+          status: false,
+          message: "couldn't update password!!!"
+        });
+      }
+
     } catch (err) {
       console.log(err);
       res.status(404).json({
@@ -670,14 +651,13 @@ exports.otpAuth2 = [
       }, {
         new: true
       });
-      if(userdata){
+      if (userdata) {
         console.log("found+++++++++++++++++++++++++++++");
-        
-      }
-      else{
+
+      } else {
         console.log("____________________________notfound");
       }
-     
+
 
       if (data) {
         res.status(200).json({
@@ -689,7 +669,7 @@ exports.otpAuth2 = [
         res.status(203).json({
           status: false,
           message: "Incorrect OTP",
-          
+
         });
       }
 
@@ -710,19 +690,19 @@ exports.call = [
   async (req, res) => {
     try {
 
-     console.log(req.body.phone);
+      console.log(req.body.phone);
       client.calls
-      .create({
-        url: 'http://demo.twilio.com/docs/voice.xml',
-        to: req.body.phone,
-        from: '+12018796637',
-      })
-      .then(call => console.log(call.sid));
+        .create({
+          url: 'http://demo.twilio.com/docs/voice.xml',
+          to: req.body.phone,
+          from: '+12018796637',
+        })
+        .then(call => console.log(call.sid));
       res.status(200).json({
         status: true,
         message: "Something went wrong"
       });
-     
+
 
     } catch (err) {
       console.log(err);
@@ -733,4 +713,3 @@ exports.call = [
     }
   }
 ];
-

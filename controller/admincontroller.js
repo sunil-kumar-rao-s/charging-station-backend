@@ -20,6 +20,11 @@ const {
   calculateTotalAmount
 } = require("../common/common");
 const ChargingPoints = require('../schema/chargingpointmodel');
+const Webanalytics = require('../schema/webanalytics');
+const Emailsubs = require('../schema/emailsub');
+const Userlogins = require('../schema/userlogins');
+const Hostformschema = require('../schema/hostform');
+const Investorformschema = require('../schema/investorform');
 
 exports.createAdminUser = [
   sanitizeBody("userName"),
@@ -666,6 +671,153 @@ exports.getAllHostList = [
       res.status(500).json({
         status: true,
         message: "Some thing went wrong."
+      });
+    }
+  }
+];
+
+exports.getwebsitevisitors = [
+  sanitizeBody("adminId"),
+  
+  async (req, res) => {
+    try {
+    
+      let visitors = await Webanalytics.find({});
+      if (visitors) {
+        res.status(200).json({
+          status: true,
+          message: "All website visitor;s details populated successfully",
+          visitors
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "visitors details not avilable"
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
+];
+
+exports.getemailsubs = [
+  sanitizeBody("adminId"),
+  
+  async (req, res) => {
+    try {
+    
+      let subs = await Emailsubs.find({});
+      if (subs) {
+        res.status(200).json({
+          status: true,
+          message: "email subscribers populated successfully",
+          subs
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "subscriber details not avilable"
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
+];
+
+
+
+exports.getAppuserlogins = [
+  sanitizeBody("adminId"),
+  
+  async (req, res) => {
+    try {
+    
+      let userlogins = await Userlogins.find({});
+      if (userlogins) {
+        res.status(200).json({
+          status: true,
+          message: "recent app logins populated successfully",
+          userlogins
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "app user login details not avilable"
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
+];
+
+exports.gethostform = [
+  sanitizeBody("adminId"),
+  
+  async (req, res) => {
+    try {
+    
+      let hosts = await Hostformschema.find({});
+      if (hosts) {
+        res.status(200).json({
+          status: true,
+          message: "host forms populated successfully",
+          hosts
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "host form details not avilable"
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
+      });
+    }
+  }
+];
+
+exports.getinvestorform = [
+  sanitizeBody("adminId"),
+  
+  async (req, res) => {
+    try {
+    
+      let investors = await Investorformschema.find({});
+      if (investors) {
+        res.status(200).json({
+          status: true,
+          message: "investor forms populated successfully",
+          investors
+        });
+      } else {
+        res.status(204).json({
+          status: false,
+          message: "investor form details not avilable"
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong."
       });
     }
   }

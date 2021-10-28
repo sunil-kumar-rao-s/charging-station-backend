@@ -26,7 +26,7 @@ const CharginPointSchema = new Schema({
   businessType: { type: String, required: true },
   businessName: { type: String, required: true },
   businessDescription: { type: String, required: true },
-  port: [{ type: Schema.Types.ObjectId, ref: 'Chargingstation' }]
+  port: [{ type: Schema.Types.ObjectId, ref: 'Chargingport' }]
 });
 
 CharginPointSchema.virtual("latitude").get(function() {

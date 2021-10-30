@@ -37,4 +37,7 @@ router.post("/getsalt", common.checkAdmin, adminController.getSalt);
 router.post("/decryptpass", common.checkAdmin, adminController.decryptPass);
 router.post("/encryplainpasswords", common.checkAdmin, adminController.encryUserPassword);
 router.post("/addstationimages", common.checkAdmin, adminController.addStationImages);
+router.post("/addtimeslot", common.checkAdmin, adminController.addTimeSlot);
+router.post("/edittimeslot", common.checkAdmin, adminController.editTimeSlot);
+router.post("/deletetimeslot", common.checkAdmin, adminController.deleteTimeSlot);
 module.exports = router;

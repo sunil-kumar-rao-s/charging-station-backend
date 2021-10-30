@@ -44,4 +44,9 @@ router.post(
   chargingpointController.addChargingPort
 );
 
+router.post(
+  "/getchargingpointsbyid",
+  chargingpointController.getChargingPointsById
+);
+
 module.exports = router;

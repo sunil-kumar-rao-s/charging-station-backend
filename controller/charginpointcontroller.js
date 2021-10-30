@@ -44,7 +44,7 @@ exports.addChargingPort = [
         if (chargingStation) {
           res.status(200).json({
             status: true,
-            message: 'Chargining port added successfully.'
+            message: 'Charging port added successfully.'
           })
         } else {
           res.status(203).json({
@@ -214,7 +214,7 @@ exports.getChargingPointList = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "chargining stations listed successfully.",
+          message: "charging stations listed successfully.",
           charginPoint: data
         });
       } else {
@@ -320,7 +320,7 @@ exports.getCharginingPointsBylocation = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: 'Chargining stations listed sucessfully',
+          message: 'Charging stations listed sucessfully',
           charginPoint: data,
         })
       } else {
@@ -338,3 +338,34 @@ exports.getCharginingPointsBylocation = [
     }
   }
 ]
+
+exports.getChargingPointsById = [
+  sanitizeBody("chargingstationId").trim(),
+   async (req, res) => {
+     try {
+       
+      await chargingPoints.findById({_id:req.body.chargingstationId},function(err,docs){
+        if(err){
+          res.status(203).json({
+            status: false,
+            message: "Cannot able to list charging station."
+          });
+        }
+        else{
+          res.status(200).json({
+            status: true,
+            message: "Charging station listed successfully.",
+            chargingStation:docs
+          });
+        }
+      });
+          
+     } catch (err) {       
+       res.status(500).json({
+         status: false,
+         message: "Something went wrong!!!",
+         error:err
+       });
+     }
+   }
+ ];

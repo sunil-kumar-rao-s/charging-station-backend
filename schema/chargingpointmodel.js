@@ -30,6 +30,7 @@ const CharginPointSchema = new Schema({
   imageLink: [{ type: String }],
   chargerType: {type:String, required:true},
   chargerSpecs: {type:String, required:true},
+  price:[{type:Schema.Types.ObjectId, ref:'Timeslots'}]
 });
 
 CharginPointSchema.virtual("latitude").get(function() {

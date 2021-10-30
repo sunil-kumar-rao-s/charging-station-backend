@@ -25,6 +25,7 @@ const Emailsubs = require('../schema/emailsub');
 const Userlogins = require('../schema/userlogins');
 const Hostformschema = require('../schema/hostform');
 const Investorformschema = require('../schema/investorform');
+const TimeSlot = require('../schema/timeslots');
 const crypto = require("crypto");
 const uuidv1 = require("uuid/v1");
 const {
@@ -644,7 +645,7 @@ exports.updateHostIssueStatus = [
         });
       }
     } catch (err) {
-    
+
       res.status(500).json({
         status: false,
         message: "Something went wrong!!!",
@@ -947,7 +948,7 @@ exports.decryptPass = [
 
 
     } catch (err) {
-      
+
       res.status(500).json({
         status: false,
         message: "Some thing went wrong."
@@ -1050,6 +1051,135 @@ exports.addStationImages = [
 
     } catch (err) {
 
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong!!!",
+        error: err
+      });
+    }
+  }
+];
+
+exports.addTimeSlot = [
+  sanitizeBody("chargingstationId"),
+  sanitizeBody("time"),
+  sanitizeBody("price"),
+
+
+  async (req, res) => {
+    try {
+
+      let timeslot = new TimeSlot({
+        chargingstationId: req.body.chargingstationId,
+        time: req.body.time,
+        price: req.body.price
+      });
+
+      let timeslotdata = await timeslot.save();
+
+      if (timeslotdata) {
+        await ChargingPoints.findByIdAndUpdate({
+            _id: req.body.chargingstationId
+          }, {
+            $addToSet: {
+              price: timeslotdata._id
+            }
+          }, {
+            new: true
+          },
+          function (err, docs) {
+            if (err) {
+              res.status(203).json({
+                status: false,
+                message: "cannot able to add pricing details."
+              });
+            } else {
+              res.status(200).json({
+                status: true,
+                message: "pricing details added successfully."
+              });
+            }
+          });
+
+      }
+
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong!!!",
+        error: err
+      });
+    }
+  }
+];
+
+exports.editTimeSlot = [
+  sanitizeBody("timeSlotId"),
+  sanitizeBody("time"),
+  sanitizeBody("price"),
+
+
+  async (req, res) => {
+    try {
+
+      let timeslot = {
+        chargingstationId: req.body.chargingstationId,
+        time: req.body.time,
+        price: req.body.price
+      }
+
+      await TimeSlot.findByIdAndUpdate({_id: req.body.timeSlotId},
+        {$set: timeslot},{new:true},function(err,docs){
+          if(err){
+            res.status(203).json({
+              status: false,
+              message: "Cannot able to update pricing details."
+            });
+          }
+          else{
+            res.status(200).json({
+              status: true,
+              message: "pricing details updated successfully."
+            });
+          }
+        });
+      
+
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong!!!",
+        error: err
+      });
+    }
+  }
+];
+
+exports.deleteTimeSlot = [
+  sanitizeBody("timeSlotId"),  
+  async (req, res) => {
+    try {
+      
+      await ChargingPoints.updateOne({_id: req.body.chargingstationId},
+        {$pull:{price:{_id:req.body.timeSlotId}}},{multi:true});
+      await TimeSlot.deleteOne({_id: req.body.timeSlotId},
+        function(err,docs){
+          if(err){
+            res.status(203).json({
+              status: false,
+              message: "Cannot able to delete pricing details."
+            });
+          }
+          else{
+            res.status(200).json({
+              status: true,
+              message: "Pricing details deleted successfully."
+            });
+          }
+        });
+      
+
+    } catch (err) {
       res.status(500).json({
         status: false,
         message: "Something went wrong!!!",

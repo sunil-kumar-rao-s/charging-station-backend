@@ -359,7 +359,9 @@ exports.getChargingPointsById = [
           });
         }
       }).populate(
-        "price","port"
+        "price"
+      ).populate(
+        "port"
       );
           
      } catch (err) {       

@@ -43,7 +43,7 @@ UserSchema
 
 UserSchema.methods = {
   autheticate: function (plainpassword) {
-    console.log(this.securePassword(plainpassword));
+    
     return this.securePassword(plainpassword) === this.encry_password;
 },
 

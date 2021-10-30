@@ -100,15 +100,13 @@ exports.login = [
         if (err || !client) {
           return res.status(204).json({
             status: false,
-            message: "User not registered.",
-            error: err
+            message: "User not registered."
           });
         }
         if (!client.autheticate(req.body.password)) {
           return res.status(204).json({
             status: false,
-            message: "Invalid phone number or password.",
-            data: client,
+            message: "Invalid phone number or password."
           });
         }
         const devicedata = new Userlogins({

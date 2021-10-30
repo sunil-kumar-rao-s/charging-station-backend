@@ -22,7 +22,7 @@ exports.addWatchList = [
         ]
       });
       if (findDuplicate) {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Watchlist already exist."
         });
@@ -38,7 +38,7 @@ exports.addWatchList = [
             message: "Watchlist added successfully."
           });
         } else {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: "Watchlist not inserted."
           });
@@ -74,7 +74,7 @@ exports.deleteWatchlist = [
           message: "Watchlist deleted successfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Could not able to delete Watchlist."
         });
@@ -114,7 +114,7 @@ exports.getWatchList = [
           });
         }
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Watchlist record not found."
         });

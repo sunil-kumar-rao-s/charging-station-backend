@@ -35,7 +35,7 @@ exports.createOrder = [
           order: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Order not created."
         });
@@ -91,7 +91,7 @@ exports.createOrderId = [
               orderId: order.id
             });
           } else {
-            res.status(204).json({
+            res.status(203).json({
               status: false,
               message: "Not able to store orderId.",
               paymentId: order.id

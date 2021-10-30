@@ -9,7 +9,7 @@ exports.checkAdmin = async (req, res, next) => {
     if (data) {
       next();
     } else {
-      res.status(204).json({
+      res.status(203).json({
         status: false,
         message: "This user is not an admin."
       });
@@ -30,7 +30,7 @@ exports.checkUser = async (req, res, next) => {
     if (data) {
       next();
     } else {
-      res.status(204).json({
+      res.status(203).json({
         status: false,
         message: "This user is not a customer."
       });
@@ -66,14 +66,14 @@ exports.checkHost = async (req, res, next) => {
         next();
       }
       else{
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "This user is blocked."
         });
       }
      
     } else {
-      res.status(204).json({
+      res.status(203).json({
         status: false,
         message: "This user is not a host."
       });
@@ -96,14 +96,14 @@ exports.postcheckHost = async (req, res, next) => {
         next();
       }
       else{
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "This user is blocked."
         });
       }
      
     } else {
-      res.status(204).json({
+      res.status(203).json({
         status: false,
         message: "This user is not a host."
       });

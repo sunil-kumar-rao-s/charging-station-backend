@@ -18,7 +18,7 @@ exports.addVechicle = [
       vechicleNumber: req.body.vechicleNumber
     });
     if (findDuplicate) {
-      res.status(204).json({
+      res.status(203).json({
         status: false,
         message: "Vehicle number already exist."
       });
@@ -46,7 +46,7 @@ exports.addVechicle = [
             vechicle: vechicleData
           });
         } else {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: "Vehicle not inserted."
           });
@@ -80,7 +80,7 @@ exports.getVechicleList = [
           vechicles: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to list Vechicles."
         });
@@ -116,7 +116,7 @@ exports.updateVechicleList = [
     });
 
     if (duplicateData) {
-      res.status(204).json({
+      res.status(203).json({
         status: false,
         message: "Vehicle Number already exist."
       });
@@ -146,7 +146,7 @@ exports.updateVechicleList = [
             vechicle: data
           });
         } else {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: "Vehicle not updated."
           });
@@ -177,7 +177,7 @@ exports.deleteVechicle = [
           message: "Vehicle deleted sucessfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Could not able to delete vehicle."
         });

@@ -69,7 +69,7 @@ exports.createHost = [
         });
       } catch (err) {
 
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to add the host."
 
@@ -216,7 +216,7 @@ exports.updateProfile = [
           data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: true,
           message: "Host not found.",
           data
@@ -255,7 +255,7 @@ exports.hostIssues = [
           data
         });
       } catch (err) {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
 
 
@@ -486,7 +486,7 @@ exports.updateStationStatus = [
           message: "Station status updated successfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Station status not updated."
         });
@@ -549,7 +549,7 @@ exports.updateSpecificPortStatus = [
           message: "Station status updated successfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Station status not updated."
         });

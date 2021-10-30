@@ -48,7 +48,7 @@ exports.createUser = [
         }]
       });
       if (mobileNumberData) {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Email or phone number already exist."
         });
@@ -69,7 +69,7 @@ exports.createUser = [
             data
           });
         } catch (err) {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: "Could not able to create user.",
             error: err
@@ -98,13 +98,13 @@ exports.login = [
         phone: req.body.phone
       }, (err, client) => {
         if (err || !client) {
-          return res.status(204).json({
+          return res.status(203).json({
             status: false,
             message: "User not registered."
           });
         }
         if (!client.autheticate(req.body.password)) {
-          return res.status(204).json({
+          return res.status(203).json({
             status: false,
             message: "Invalid phone number or password."
           });
@@ -158,7 +158,7 @@ exports.getProfile = async (req, res) => {
       profileData: data
     });
   } catch (err) {
-    res.status(204).json({
+    res.status(203).json({
       status: false,
       message: "Profile details not found."
     });
@@ -191,7 +191,7 @@ exports.updateProfile = [
           data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "requested user not found.",
           data
@@ -219,7 +219,7 @@ exports.updatePassword = [
       }, (err, client) => {
 
         if (!client.autheticate(req.body.oldPassword)) {
-          return res.status(204).json({
+          return res.status(203).json({
             status: false,
             message: "Old password doesnt match.",
 
@@ -301,13 +301,13 @@ exports.updateWallet = [
               walletAmount: update.walletAmount
             });
           } else {
-            res.status(204).json({
+            res.status(203).json({
               status: true,
               message: "wallet amount not able to update in user table"
             });
           }
         } else {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: "Payment Data not updated in payment table."
           });
@@ -339,7 +339,7 @@ exports.getTranscationDetails = [
           transcationHistory: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Transcation history not listed."
         });
@@ -445,7 +445,7 @@ exports.getNotification = [
           notifications: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to list notification."
         });
@@ -493,7 +493,7 @@ exports.sendOtp = [
           new: true
         }, function (err, docs) {
           if (err) {
-            res.status(204).json({
+            res.status(203).json({
               status: false,
               message: "Could not send OTP."
             });
@@ -522,7 +522,7 @@ exports.sendOtp = [
 
           });
         } catch (err) {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: "Could not send OTP."
           });
@@ -604,7 +604,7 @@ exports.forgotPassword = [
           message: "Password updated successfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Key mismatch."
         });

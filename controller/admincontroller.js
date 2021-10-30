@@ -145,7 +145,7 @@ exports.getAllUserList = [
           user
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Users not found."
         });
@@ -182,7 +182,7 @@ exports.updateUserStatus = [
           message: "User status updated successfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "User status not updated."
         });
@@ -236,7 +236,7 @@ exports.getOrderList = [
         });
       } else {
 
-        res.json(204).json({
+        res.json(203).json({
           status: false,
           message: "Order list empty."
         });
@@ -274,7 +274,7 @@ exports.updateOrder = [
           message: "Order updated successfully.",
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Order not updated."
         });
@@ -304,7 +304,7 @@ exports.addStaticPage = [
           privacyPolicy: data,
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: 'Cannot able to add privacy policy.',
         });
@@ -334,7 +334,7 @@ exports.addTermsAndCondition = [
           privacyPolicy: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to add terms and conditions."
         });
@@ -364,7 +364,7 @@ exports.addAboutUs = [
           privacyPolicy: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to add about us."
         });
@@ -394,7 +394,7 @@ exports.howisitwork = [
           howIsItWork: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to add how it works."
         });
@@ -527,7 +527,7 @@ exports.addNotification = [
           notification: data,
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: 'Cannot able to add notification.'
         });
@@ -567,7 +567,7 @@ exports.activateOrdeactivateNotification = [
           notification: data,
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: 'Notification not updated.',
         });
@@ -638,7 +638,7 @@ exports.updateHostIssueStatus = [
           message: "Resolved status and comment updated successfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Resolved status and comment not updated."
         });
@@ -676,7 +676,7 @@ exports.updateHostStatus = [
           message: "User status updated successfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "User status not updated."
         });
@@ -719,7 +719,7 @@ exports.getAllHostList = [
           host
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Hosts not avilable."
         });
@@ -749,7 +749,7 @@ exports.getwebsitevisitors = [
           visitors
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "visitors details not avilable."
         });
@@ -779,7 +779,7 @@ exports.getemailsubs = [
           subs
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Subscriber details not avilable."
         });
@@ -811,7 +811,7 @@ exports.getAppuserlogins = [
           userlogins
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "App user login details not avilable."
         });
@@ -841,7 +841,7 @@ exports.gethostform = [
           hosts
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Host form details not avilable."
         });
@@ -871,7 +871,7 @@ exports.getinvestorform = [
           investors
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Investor form details not avilable."
         });
@@ -1033,7 +1033,7 @@ exports.addStationImages = [
         upsert: true
       }, function (err, docs) {
         if (err) {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: "Cannot able to add image link.",
 

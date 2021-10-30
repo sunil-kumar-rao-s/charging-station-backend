@@ -47,13 +47,13 @@ exports.addChargingPort = [
             message: 'Chargining port added successfully.'
           })
         } else {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: 'Charging station not found.',
           })
         }
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: 'Charginig ports not created.',
         });
@@ -110,7 +110,7 @@ exports.createChargingPoing = [
         pointName: req.body.pointName
       });
       if (findData) {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Charging station name is already in use."
         });
@@ -123,7 +123,7 @@ exports.createChargingPoing = [
             charginPoint: data
           });
         } else {
-          res.status(204).json({
+          res.status(203).json({
             status: false,
             message: "Cannot able to create charging station."
           });
@@ -185,7 +185,7 @@ exports.updateChargingPoint = [
           charginPoint: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to update charging station.",
           
@@ -218,7 +218,7 @@ exports.getChargingPointList = [
           charginPoint: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to list charging station."
         });
@@ -256,7 +256,7 @@ exports.changetPointStatus = [
           charginPoint: data
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to update charging station status."
         });
@@ -285,7 +285,7 @@ exports.deletetPoint = [
           message: "Charging station deleted sucessfully."
         });
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to delete charging station."
         });
@@ -324,7 +324,7 @@ exports.getCharginingPointsBylocation = [
           charginPoint: data,
         })
       } else {
-        res.status(204).json({
+        res.status(203).json({
           status: false,
           message: "Cannot able to list charging stations."
         })

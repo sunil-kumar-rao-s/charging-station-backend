@@ -59,7 +59,7 @@ exports.viewPack = [
 
             const packdata = await CoinpackSchema.find({}, function (err, docs) {
                 if (err) {
-                    res.status(204).json({
+                    res.status(203).json({
                         status: false,
                         message: "Cannot able to list coin packs.",
                         error: err
@@ -93,7 +93,7 @@ exports.deletePack = [
                 packId: req.body.packId
             }, function (err, docs) {
                 if (err) {
-                    res.status(204).json({
+                    res.status(203).json({
                         status: false,
                         message: "Cannot able to delete coin pack.",
                         error: err
@@ -149,7 +149,7 @@ exports.editPack = [
                 new: true
             }, function (err, docs) {
                 if (err) {
-                    res.status(204).json({
+                    res.status(203).json({
                         status: false,
                         message: "Coin pack not found.",
                         err

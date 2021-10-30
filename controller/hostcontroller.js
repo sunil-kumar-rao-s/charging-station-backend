@@ -35,7 +35,7 @@ exports.createHost = [
   sanitizeBody("password").trim(),
   async (req, res) => {
     try {
-      console.log("------------------------------------------inside first try block")
+
       const host = new Host({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -60,25 +60,27 @@ exports.createHost = [
         password: req.body.password,
       });
       try {
-        console.log("----------------------------------------inner try block")
+
         const data = await host.save();
         res.status(200).json({
           status: true,
-          data
+          message: "Host added successfully.",
+          data: data
         });
       } catch (err) {
-        console.log(err);
-        res.status(200).json({
+
+        res.status(204).json({
           status: false,
-          message: "aadhar number already exist......."
+          message: "Cannot able to add the host."
 
         });
       }
 
     } catch (err) {
-      res.status(200).json({
+      res.status(500).json({
         status: false,
-        message: "aadhar number already exist"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -90,7 +92,6 @@ exports.login = [
   sanitizeBody("password").trim(),
   async (req, res) => {
     try {
-      console.log("------------------------outer try block");
       let data = await Host.findOne({
         $and: [{
             password: req.body.password
@@ -119,23 +120,23 @@ exports.login = [
         const jwtToken = jwt.sign({
           email: req.body.email
         }, "accessToken");
-        console.log("accessToekn=====> ", jwtToken);
         data.lastActiveAt = lastDate;
         res.status(200).json({
           status: true,
+          message: "Host login successful.",
           data: data
         });
       } else {
         res.status(203).json({
           status: false,
-          message: "invalid username or password..."
+          message: "invalid username or password."
         });
       }
     } catch (err) {
-      console.log(err);
-      res.status(203).json({
+      res.status(500).json({
         status: false,
-        message: "invalid username or password"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -143,18 +144,19 @@ exports.login = [
 
 exports.getProfile = async (req, res) => {
   try {
-    console.log("view profile called");
     let data = await Host.findOne({
       _id: req.query.hostId
     }).select("-password");
     res.status(200).json({
       status: true,
+      message: "Host profile listed successfully.",
       profileData: data
     });
   } catch (err) {
-    res.status(401).json({
+    res.status(500).json({
       status: false,
-      message: "Profile Details not found"
+      message: "Something went wrong!!!",
+      error: err
     });
   }
 };
@@ -179,7 +181,6 @@ exports.updateProfile = [
   sanitizeBody("chargerFor").trim(),
 
   async (req, res) => {
-    console.log("update profile called");
     let updateValue = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -211,20 +212,21 @@ exports.updateProfile = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Profile updated successfully",
+          message: "Host profile updated successfully.",
           data
         });
       } else {
-        res.status(401).json({
+        res.status(204).json({
           status: true,
-          message: "request user not found",
+          message: "Host not found.",
           data
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Email or mobile number already exsist with another user"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -238,7 +240,6 @@ exports.hostIssues = [
 
   async (req, res) => {
     try {
-      console.log("------------------------------------------inside first try block")
       const issues = new Issues({
         hostId: req.body.hostId,
         title: req.body.title,
@@ -247,25 +248,25 @@ exports.hostIssues = [
 
       });
       try {
-        console.log("----------------------------------------inner try block")
         const data = await issues.save();
         res.status(200).json({
           status: true,
+          message: "Host issue added successfully.",
           data
         });
       } catch (err) {
-        console.log(err);
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "......."
+
 
         });
       }
 
     } catch (err) {
-      res.status(200).json({
+      res.status(500).json({
         status: false,
-        message: "."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -273,18 +274,19 @@ exports.hostIssues = [
 
 exports.getAllHostIssues = async (req, res) => {
   try {
-    console.log("get all issues called");
     let data = await Issues.find({
       hostId: req.query.hostId
     });
     res.status(200).json({
       status: true,
+      message: "Host issues listed successfully.",
       issuesData: data
     });
   } catch (err) {
     res.status(401).json({
       status: false,
-      message: "Issues not found"
+      message: "Something went wrong!!!",
+      error: err
     });
   }
 };
@@ -303,24 +305,25 @@ exports.getChargingPointList = [
       var data1 = await ChargingStations.find({
         hostId: req.query.hostId
       });
-      
+
       if (data) {
         res.status(200).json({
           status: true,
-          message: "chargining ports listed successfully",
+          message: "Host chargers listed successfully.",
           charginStations: data1,
           charginPoints: data
         });
       } else {
         res.status(500).json({
           status: false,
-          message: "Charging ports not listed successfully."
+          message: "Host chargers not listed."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -352,23 +355,24 @@ exports.showAllHostSessions = [
 
         res.status(200).json({
           status: true,
+          message: "Host sessions listed successfully.",
           sessionsData: data
         });
 
       } catch (err) {
 
-        res.status(400).json({
+        res.status(500).json({
           status: false,
-          message: "inside block error"
-
+          message: "Something went wrong!!!",
+          error: err
         });
       }
 
     } catch (err) {
-      console.log(err);
-      res.status(400).json({
+      res.status(500).json({
         status: false,
-        message: "Cannot create the session, please try again"
+        message: "Something went wrong!!!",
+        error: err
       });
 
     }
@@ -409,17 +413,19 @@ exports.showAllHostTransactions = [
 
       } catch (err) {
 
-        res.status(400).json({
+        res.status(500).json({
           status: false,
-          message: "inside block error"
+          message: "Something went wrong!!!",
+          error: err
 
         });
       }
 
     } catch (err) {
-      res.status(400).json({
+      res.status(500).json({
         status: false,
-        message: "Cannot create the session, please try again"
+        message: "Something went wrong!!!",
+        error: err
       });
 
     }
@@ -437,6 +443,7 @@ exports.dashBoard = [
       let totalAmount = await calculateTotalAmount(payments);
       res.status(200).json({
         status: true,
+        message: "Host dashboard data listed successfully.",
         users: user,
         payments,
         totalAmount,
@@ -449,7 +456,8 @@ exports.dashBoard = [
     } catch (e) {
       res.status(500).json({
         status: true,
-        message: 'Something went wrong'
+        message: "Something went wrong!!!",
+        error: err
       });
     }
 
@@ -462,49 +470,44 @@ exports.updateStationStatus = [
 
   async (req, res) => {
     try {
-      console.log("-------------------------------------------inside try block")
       let status = {
         isOpen: req.body.isOpen
       };
       let updateStatus = await ChargingStations.findOneAndUpdate({
-        hostId : req.body.hostId
+        hostId: req.body.hostId
       }, {
         $set: status
       }, {
         new: true
       });
-      console.log("-------------------------------------------before if "+ updateStatus)
       if (updateStatus) {
         res.status(200).json({
           status: true,
-          message: "Station status updated successfully"
+          message: "Station status updated successfully."
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "Station status not updated successfully"
+          message: "Station status not updated."
         });
       }
-      if(req.body.isOpen == "true"){
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++++inside if ");
+      if (req.body.isOpen == "true") {
         let portstatus = {
-          isOnline : "true"
+          isOnline: "true"
         };
         let updateStatus = await ChargingPorts.update({
-          hostId : req.body.hostId
+          hostId: req.body.hostId
         }, {
           $set: portstatus
         }, {
           multi: true
         });
-      }
-      else{
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++++inside else ");
+      } else {
         let portstatus = {
-          isOnline : "false"
+          isOnline: "false"
         };
         let updateStatus = await ChargingPorts.update({
-          hostId : req.body.hostId
+          hostId: req.body.hostId
         }, {
           $set: portstatus
         }, {
@@ -513,10 +516,10 @@ exports.updateStationStatus = [
 
       }
     } catch (err) {
-      console.log("error ", err);
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -529,35 +532,35 @@ exports.updateSpecificPortStatus = [
 
   async (req, res) => {
     try {
-      console.log("-------------------------------------------inside try block")
       let status = {
         isOnline: req.body.isOnline
       };
       let updateStatus = await ChargingPorts.findOneAndUpdate({
-        _id : req.body.portId
+        _id: req.body.portId
       }, {
         $set: status
       }, {
         new: true
       });
-      console.log("-------------------------------------------before if "+ updateStatus)
+
       if (updateStatus) {
         res.status(200).json({
           status: true,
-          message: "Station status updated successfully"
+          message: "Station status updated successfully."
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "Station status not updated successfully"
+          message: "Station status not updated."
         });
       }
-      
+
     } catch (err) {
-      console.log("error ", err);
+
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }

@@ -27,7 +27,9 @@ const Hostformschema = require('../schema/hostform');
 const Investorformschema = require('../schema/investorform');
 const crypto = require("crypto");
 const uuidv1 = require("uuid/v1");
-const { findOne } = require("../schema/adminmodel");
+const {
+  findOne
+} = require("../schema/adminmodel");
 
 exports.createAdminUser = [
   sanitizeBody("userName"),
@@ -43,16 +45,31 @@ exports.createAdminUser = [
     });
 
     try {
-      let data = await admin.save();
-      res.status(200).json({
-        status: true,
-        data,
-        message: "Admin created successfully"
+      await admin.save({}, function (err, resp) {
+        if (err) {
+
+          res.status(203).json({
+
+            status: false,
+            message: "Cannot able to create admin user.",
+            error: err
+
+          });
+        } else {
+
+          res.status(200).json({
+            status: true,
+            message: "Admin created successfully.",
+            data: resp
+          });
+        }
       });
+
     } catch (err) {
-      res.status(409).json({
+      res.status(500).json({
         status: false,
-        message: "Email or Mobile number already exsist"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -79,22 +96,23 @@ exports.login = [
       }).select("-password");
       if (data) {
         delete data.password;
-        console.log("admin login data===> ", typeof data);
+
         res.status(200).json({
           status: true,
-          message: "admin login successfully",
+          message: "Admin login successfully.",
           data
         });
       } else {
-        res.status(500).json({
+        res.status(203).json({
           status: false,
-          message: "Invalid username or password"
+          message: "Invalid username or password."
         });
       }
     } catch (err) {
-      res.status(410).json({
+      res.status(500).json({
         status: false,
-        message: "Invalid username or password"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -122,20 +140,21 @@ exports.getAllUserList = [
       if (user || users) {
         res.status(200).json({
           status: true,
-          message: "All User list populated successfully",
+          message: "Users list populated successfully.",
           users,
           user
         });
       } else {
         res.status(204).json({
-          status: true,
-          message: "All User not avilable"
+          status: false,
+          message: "Users not found."
         });
       }
     } catch (err) {
       res.status(500).json({
-        status: true,
-        message: "Some thing went wrong."
+        status: false,
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -160,19 +179,20 @@ exports.updateUserStatus = [
       if (updateStatus) {
         res.status(200).json({
           status: true,
-          message: "User status updated successfully"
+          message: "User status updated successfully."
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "User status not updated successfully"
+          message: "User status not updated."
         });
       }
     } catch (err) {
-      console.log("error ", err);
+
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -182,7 +202,7 @@ exports.getOrderList = [
   sanitizeBody("adminId"),
   async (req, res) => {
     try {
-      console.log('getOrderList----> 1');
+
       let data = await Order.find({})
         .populate("user")
         .populate("vechicle")
@@ -206,26 +226,27 @@ exports.getOrderList = [
           }
         })
         .exec();
-      console.log('getOrderList----> 2');
+
       if (data) {
-        console.log('getOrderList----> 3');
+
         res.status(200).json({
           status: true,
-          message: "All orders listed successfully",
+          message: "All orders listed successfully.",
           order: data
         });
       } else {
-        console.log('getOrderList----> 4');
-        res.json(200).json({
+
+        res.json(204).json({
           status: false,
-          message: "Order list empty"
+          message: "Order list empty."
         });
       }
     } catch (err) {
-      console.log('getOrderList----> 5 ', err);
+
       res.json(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -250,18 +271,19 @@ exports.updateOrder = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Order updated successfully",
+          message: "Order updated successfully.",
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "Order not updated successfully"
+          message: "Order not updated."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "something went wrong"
+        message: "something went wrong!!!",
+        error: err
       });
     }
   }
@@ -278,19 +300,20 @@ exports.addStaticPage = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: 'Privcy policy inserted successfully',
+          message: 'Privcy policy added successfully.',
           privacyPolicy: data,
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: 'Privcy policy not inserted successfully',
+          message: 'Cannot able to add privacy policy.',
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: 'Something went wrong',
+        message: 'Something went wrong!!!',
+        error: err
       });
     }
   }
@@ -307,19 +330,20 @@ exports.addTermsAndCondition = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Terms and condition inserted successfully",
+          message: "Terms and conditions added successfully.",
           privacyPolicy: data
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "Terms and condition not inserted successfully"
+          message: "Cannot able to add terms and conditions."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -336,19 +360,20 @@ exports.addAboutUs = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "About us inserted successfully",
+          message: "About us added successfully.",
           privacyPolicy: data
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "About us not inserted successfully"
+          message: "Cannot able to add about us."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -365,19 +390,20 @@ exports.howisitwork = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "How is work added sucessfully",
+          message: "How it works added sucessfully.",
           howIsItWork: data
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "About us not inserted successfully"
+          message: "Cannot able to add how it works."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -394,11 +420,16 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "Privacy policy listed sucessfully",
+            message: "Privacy policy listed sucessfully.",
             privacyPolicy: data
           });
         } catch (err) {
-          console.log(err);
+
+          res.status(500).json({
+            status: false,
+            message: "Something went wrong!!!",
+            error: err
+          });
         }
         break;
       case "ABOUT":
@@ -408,11 +439,15 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "About us listed sucessfully",
+            message: "About us listed sucessfully.",
             Aboutus: data
           });
         } catch (err) {
-          console.log(err);
+          res.status(500).json({
+            status: false,
+            message: "Something went wrong!!!",
+            error: err
+          });
         }
         break;
       case "TERMS":
@@ -422,11 +457,15 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "Terms listed sucessfully",
+            message: "Terms and conditions listed sucessfully.",
             terms: data
           });
         } catch (err) {
-          console.log(err);
+          res.status(500).json({
+            status: false,
+            message: "Something went wrong!!!",
+            error: err
+          });
         }
         break;
 
@@ -437,11 +476,14 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "How is it work listed sucessfully",
+            message: "How it works listed sucessfully.",
             terms: data
           });
         } catch (err) {
-          console.log(err);
+          res.status(500).json({
+            status: false,
+            message: "Something went wrong!!!"
+          });
         }
         break;
       default:
@@ -451,11 +493,15 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "Privacy policy listed sucessfully",
+            message: "Privacy policy listed sucessfully.",
             privacyPolicy: data
           });
         } catch (err) {
-          console.log(err);
+          res.status(500).json({
+            status: false,
+            message: "Something went wrong!!!",
+            error: err
+          });
         }
         break;
     }
@@ -477,20 +523,21 @@ exports.addNotification = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: 'Notification Created Successfully',
+          message: 'Notification added successfully.',
           notification: data,
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: 'Notification not Created Successfully',
+          message: 'Cannot able to add notification.'
         });
       }
     } catch (err) {
-      console.log('err=======> ', err)
+
       res.status(500).json({
         status: false,
         message: 'Something went wrong',
+        error: err
       });
     }
   }
@@ -499,34 +546,39 @@ exports.addNotification = [
 exports.activateOrdeactivateNotification = [
   sanitizeBody('notificationId'),
   sanitizeBody('isNotificationActive'),
-  
+
   async (req, res) => {
-    
+
     try {
-     let data = await Notification.findOneAndUpdate(
-        { _id: req.body.notificationId },
-        { $set: {isNotificationActive: req.body.isNotificationActive} },
-        { new: true }
-      );
-      
+      let data = await Notification.findOneAndUpdate({
+        _id: req.body.notificationId
+      }, {
+        $set: {
+          isNotificationActive: req.body.isNotificationActive
+        }
+      }, {
+        new: true
+      });
+
       if (data) {
         res.status(200).json({
           status: true,
-          message: 'Notification Updated Successfully',
+          message: 'Notification updated successfully.',
           notification: data,
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: 'Notification not Updated',
+          message: 'Notification not updated.',
         });
       }
     } catch (err) {
-      
-      console.log('err===================================> ', err);
+
+
       res.status(500).json({
         status: false,
         message: 'Something went wrong while updating the notification',
+        error: err
       });
     }
   }
@@ -551,10 +603,11 @@ exports.dashBoard = [
         AdminUsers,
         totalHoast: 5
       });
-    } catch (e) {
+    } catch (err) {
       res.status(500).json({
-        status: true,
-        message: 'Something went wrong'
+        status: false,
+        message: 'Something went wrong!!!',
+        error: err
       });
     }
 
@@ -582,19 +635,20 @@ exports.updateHostIssueStatus = [
       if (updateStatus) {
         res.status(200).json({
           status: true,
-          message: "Resolved Status and comment updated successfully"
+          message: "Resolved status and comment updated successfully."
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "Resolved status and comment not updated successfully"
+          message: "Resolved status and comment not updated."
         });
       }
     } catch (err) {
-      console.log("error ", err);
+    
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -619,19 +673,20 @@ exports.updateHostStatus = [
       if (updateStatus) {
         res.status(200).json({
           status: true,
-          message: "User status updated successfully"
+          message: "User status updated successfully."
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "User status not updated successfully"
+          message: "User status not updated."
         });
       }
     } catch (err) {
-      console.log("error ", err);
+
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -659,21 +714,22 @@ exports.getAllHostList = [
       if (host || hosts) {
         res.status(200).json({
           status: true,
-          message: "All Host list populated successfully",
+          message: "All host listed successfully.",
           hosts,
           host
         });
       } else {
         res.status(204).json({
-          status: true,
-          message: "All Host not avilable"
+          status: false,
+          message: "Hosts not avilable."
         });
       }
     } catch (err) {
-      console.log(err);
+
       res.status(500).json({
-        status: true,
-        message: "Some thing went wrong."
+        status: false,
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -681,28 +737,29 @@ exports.getAllHostList = [
 
 exports.getwebsitevisitors = [
   sanitizeBody("adminId"),
-  
+
   async (req, res) => {
     try {
-    
+
       let visitors = await Webanalytics.find({});
       if (visitors) {
         res.status(200).json({
           status: true,
-          message: "All website visitor;s details populated successfully",
+          message: "All website visitor details listed successfully.",
           visitors
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "visitors details not avilable"
+          message: "visitors details not avilable."
         });
       }
     } catch (err) {
-      console.log(err);
+
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -710,28 +767,29 @@ exports.getwebsitevisitors = [
 
 exports.getemailsubs = [
   sanitizeBody("adminId"),
-  
+
   async (req, res) => {
     try {
-    
+
       let subs = await Emailsubs.find({});
       if (subs) {
         res.status(200).json({
           status: true,
-          message: "email subscribers populated successfully",
+          message: "Email subscribers listed successfully.",
           subs
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "subscriber details not avilable"
+          message: "Subscriber details not avilable."
         });
       }
     } catch (err) {
-      console.log(err);
+
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -741,28 +799,29 @@ exports.getemailsubs = [
 
 exports.getAppuserlogins = [
   sanitizeBody("adminId"),
-  
+
   async (req, res) => {
     try {
-    
+
       let userlogins = await Userlogins.find({});
       if (userlogins) {
         res.status(200).json({
           status: true,
-          message: "recent app logins populated successfully",
+          message: "Recent app logins listed successfully.",
           userlogins
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "app user login details not avilable"
+          message: "App user login details not avilable."
         });
       }
     } catch (err) {
-      console.log(err);
+
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -770,28 +829,29 @@ exports.getAppuserlogins = [
 
 exports.gethostform = [
   sanitizeBody("adminId"),
-  
+
   async (req, res) => {
     try {
-    
+
       let hosts = await Hostformschema.find({});
       if (hosts) {
         res.status(200).json({
           status: true,
-          message: "host forms populated successfully",
+          message: "Host forms listed successfully.",
           hosts
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "host form details not avilable"
+          message: "Host form details not avilable."
         });
       }
     } catch (err) {
-      console.log(err);
+
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -799,28 +859,29 @@ exports.gethostform = [
 
 exports.getinvestorform = [
   sanitizeBody("adminId"),
-  
+
   async (req, res) => {
     try {
-    
+
       let investors = await Investorformschema.find({});
       if (investors) {
         res.status(200).json({
           status: true,
-          message: "investor forms populated successfully",
+          message: "Investor forms listed successfully.",
           investors
         });
       } else {
         res.status(204).json({
           status: false,
-          message: "investor form details not avilable"
+          message: "Investor form details not avilable."
         });
       }
     } catch (err) {
-      console.log(err);
+
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -829,16 +890,16 @@ exports.getinvestorform = [
 
 exports.getSalt = [
   sanitizeBody("password"),
-  
+
   async (req, res) => {
     try {
-     
+
       let salt = uuidv1();
       let encry_password = crypto
-      .createHmac("sha256", salt)
-      .update(req.body.password)
-      .digest("hex");
-    
+        .createHmac("sha256", salt)
+        .update(req.body.password)
+        .digest("hex");
+
       let hashData = {
         salt: salt,
         encry_password: encry_password
@@ -848,7 +909,7 @@ exports.getSalt = [
         message: "hashed and salted successfully",
         hashData
       });
-      
+
 
 
     } catch (err) {
@@ -863,16 +924,16 @@ exports.getSalt = [
 exports.decryptPass = [
   sanitizeBody("salt"),
   sanitizeBody("plain_password"),
-  
+
   async (req, res) => {
     try {
-     
+
       let salt = req.body.salt;
       let encry_password = crypto
-      .createHmac("sha256", salt)
-      .update(req.body.plain_password)
-      .digest("hex");
-    
+        .createHmac("sha256", salt)
+        .update(req.body.plain_password)
+        .digest("hex");
+
       let hashData = {
         salt: salt,
         password: encry_password
@@ -882,11 +943,11 @@ exports.decryptPass = [
         message: "hashed and salted successfully",
         hashData
       });
-      
+
 
 
     } catch (err) {
-      console.log(err);
+      
       res.status(500).json({
         status: false,
         message: "Some thing went wrong."
@@ -897,42 +958,52 @@ exports.decryptPass = [
 
 exports.encryUserPassword = [
   sanitizeBody("userId"),
-  
+
   async (req, res) => {
     try {
-      
-      let userData = await User.findOne({_id:req.body.userId});
-      console.log('---------------------------------------------'+userData.password);
-      
+
+      let userData = await User.findOne({
+        _id: req.body.userId
+      });
+      console.log('---------------------------------------------' + userData.password);
+
       let salt = uuidv1();
       let encry_password = crypto
-      .createHmac("sha256", salt)
-      .update(userData.password)
-      .digest("hex");
-    
+        .createHmac("sha256", salt)
+        .update(userData.password)
+        .digest("hex");
+
       let hashData = {
         salt: salt,
         encry_password: encry_password
       }
 
-      await User.findOneAndUpdate({_id:req.body.userId},
-        
-         {  $set:{ salt: salt,
-          encry_password: encry_password,
-        password:''}},{upsert:true},function(err,docs){
-            if(err){
-              console.log(err);
-            }
-            else{
-              console.log(docs);
-              res.status(200).json({
-                status: true,
-                message: "hashed and salted successfully",
-                hashData
-              });
-            }
+      await User.findOneAndUpdate({
+          _id: req.body.userId
+        },
+
+        {
+          $set: {
+            salt: salt,
+            encry_password: encry_password,
+            password: ''
           }
-        );
+        }, {
+          upsert: true
+        },
+        function (err, docs) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(docs);
+            res.status(200).json({
+              status: true,
+              message: "hashed and salted successfully",
+              hashData
+            });
+          }
+        }
+      );
 
     } catch (err) {
       console.log(err);
@@ -948,30 +1019,41 @@ exports.addStationImages = [
   sanitizeBody("adminId"),
   sanitizeBody("chargingstationId"),
   sanitizeBody("imageLink"),
-  
+
   async (req, res) => {
     try {
-      
-      let linkdata = await ChargingPoints.findByIdAndUpdate({_id:req.body.chargingstationId},
-        {$addToSet:{imageLink:[req.body.imageLink]}},{upsert:true},function(err,docs){
-          if(err){
-            console.log(err);
-          }
-          else{
-            res.status(200).json({
-              status: true,
-              message: "Image Link inserted Successfully",
-              docs
-            });
-          }
-        });
-     
-        
+
+      let linkdata = await ChargingPoints.findByIdAndUpdate({
+        _id: req.body.chargingstationId
+      }, {
+        $addToSet: {
+          imageLink: [req.body.imageLink]
+        }
+      }, {
+        upsert: true
+      }, function (err, docs) {
+        if (err) {
+          res.status(204).json({
+            status: false,
+            message: "Cannot able to add image link.",
+
+          });
+        } else {
+          res.status(200).json({
+            status: true,
+            message: "Image link added successfully.",
+            docs
+          });
+        }
+      });
+
+
     } catch (err) {
-      console.log(err);
+
       res.status(500).json({
         status: false,
-        message: "Some thing went wrong."
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }

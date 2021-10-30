@@ -48,9 +48,9 @@ exports.createUser = [
         }]
       });
       if (mobileNumberData) {
-        res.status(203).json({
+        res.status(204).json({
           status: false,
-          message: "Email or Phone number already exist....."
+          message: "Email or phone number already exist."
         });
       } else {
         const user = new User({
@@ -65,21 +65,22 @@ exports.createUser = [
           const data = await user.save();
           res.status(200).json({
             status: true,
+            message: "User created successfully.",
             data
           });
         } catch (err) {
-          console.log(err);
-          res.status(200).json({
+          res.status(204).json({
             status: false,
-            message: "Email or Phone number already exist."
+            message: "Could not able to create user.",
+            error: err
           });
         }
       }
     } catch (err) {
-      console.log(err);
-      res.status(200).json({
+      res.status(500).json({
         status: false,
-        message: "Email or Phone number already exist"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -97,19 +98,16 @@ exports.login = [
         phone: req.body.phone
       }, (err, client) => {
         if (err || !client) {
-          return res.status(400).json({
+          return res.status(204).json({
             status: false,
-            message: "User Not Registered in Please Register",
-            data: {},
+            message: "User not registered.",
+            error: err
           });
         }
         if (!client.autheticate(req.body.password)) {
-          console.log(req.body.password);
-
-          console.log(!client.autheticate(req.body.password));
-          return res.status(401).json({
+          return res.status(204).json({
             status: false,
-            message: "Phone number and password do not match",
+            message: "Invalid phone number or password.",
             data: client,
           });
         }
@@ -126,15 +124,16 @@ exports.login = [
 
         devicedata.save(function (err, docs) {
           if (err) {
-            console.log(err);
+
           } else {
-            console.log(docs);
+
           }
         });
 
 
         res.status(200).json({
           status: true,
+          message: "User logged in successfully.",
           data: client
         });
       });
@@ -142,10 +141,10 @@ exports.login = [
 
 
     } catch (err) {
-      console.log(err);
       res.status(203).json({
         status: false,
-        message: "Something went Wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -153,7 +152,6 @@ exports.login = [
 
 exports.getProfile = async (req, res) => {
   try {
-    console.log("view profile called");
     let data = await User.findOne({
       _id: req.query.id
     }).select("-password");
@@ -162,9 +160,9 @@ exports.getProfile = async (req, res) => {
       profileData: data
     });
   } catch (err) {
-    res.status(401).json({
+    res.status(204).json({
       status: false,
-      message: "Profile Details not found"
+      message: "Profile details not found."
     });
   }
 };
@@ -175,7 +173,6 @@ exports.updateProfile = [
   sanitizeBody("email").trim(),
   sanitizeBody("city").trim(),
   async (req, res) => {
-    console.log("update profile called");
     let updateValue = {
       userName: req.body.userName,
       email: req.body.email,
@@ -192,20 +189,21 @@ exports.updateProfile = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Profile updated successfully",
+          message: "Profile updated successfully.",
           data
         });
       } else {
-        res.status(401).json({
-          status: true,
-          message: "request user not found",
+        res.status(204).json({
+          status: false,
+          message: "requested user not found.",
           data
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Email or Phone number already exsist with another user"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -223,9 +221,9 @@ exports.updatePassword = [
       }, (err, client) => {
 
         if (!client.autheticate(req.body.oldPassword)) {
-          return res.status(401).json({
+          return res.status(204).json({
             status: false,
-            message: "Old Password Doesnt match",
+            message: "Old password doesnt match.",
 
           });
         } else {
@@ -234,15 +232,15 @@ exports.updatePassword = [
           client.save();
           return res.status(200).json({
             status: true,
-            message: "Password changed Successfully",
+            message: "Password changed Successfully.",
           });
         }
       });
     } catch (err) {
-      console.log(err);
       res.status(500).json({
         status: false,
-        message: "Something went wrong!!!"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -301,26 +299,26 @@ exports.updateWallet = [
           if (update) {
             res.status(200).json({
               status: true,
-              message: "wallet amount updated successfully",
+              message: "Wallet amount updated successfully.",
               walletAmount: update.walletAmount
             });
           } else {
-            res.status(200).json({
+            res.status(204).json({
               status: true,
               message: "wallet amount not able to update in user table"
             });
           }
         } else {
-          res.status(200).json({
+          res.status(204).json({
             status: false,
-            message: "Payment Data not updated successfully in payment table"
+            message: "Payment Data not updated in payment table."
           });
         }
       } catch (err) {
-        console.log(err);
         res.status(500).json({
           status: false,
-          message: "Something went wrong"
+          message: "Something went wrong!!!",
+          error: err
         });
       }
     }
@@ -339,19 +337,20 @@ exports.getTranscationDetails = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Transcation history listed sucessfully",
+          message: "Transcation history listed sucessfully.",
           transcationHistory: data
         });
       } else {
-        res.status(200).json({
-          status: true,
-          message: "Transcation history not listed sucessfully"
+        res.status(204).json({
+          status: false,
+          message: "Transcation history not listed."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -368,11 +367,11 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "Privacy policy listed sucessfully",
+            message: "Privacy policy listed sucessfully.",
             privacyPolicy: data[0]
           });
         } catch (err) {
-          console.log(err);
+
         }
         break;
       case "ABOUT":
@@ -382,11 +381,11 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "About us listed sucessfully",
+            message: "About us listed sucessfully.",
             Aboutus: data[0]
           });
         } catch (err) {
-          console.log(err);
+
         }
         break;
       case "TERMS":
@@ -396,11 +395,11 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "Terms listed sucessfully",
+            message: "Terms and conditions listed sucessfully.",
             terms: data[0]
           });
         } catch (err) {
-          console.log(err);
+
         }
         break;
       case "HOWISITWORK":
@@ -410,11 +409,11 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "How is it work listed sucessfully",
+            message: "How it works listed sucessfully.",
             terms: data
           });
         } catch (err) {
-          console.log(err);
+
         }
         break;
       default:
@@ -424,11 +423,11 @@ exports.getStaticPage = [
           });
           res.status(200).json({
             status: true,
-            message: "Privacy policy listed sucessfully",
+            message: "Privacy policy listed sucessfully.",
             privacyPolicy: data[0]
           });
         } catch (err) {
-          console.log(err);
+
         }
         break;
     }
@@ -444,19 +443,20 @@ exports.getNotification = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Notification listed successfully",
+          message: "Notification listed successfully.",
           notifications: data
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "Notification listed is empty"
+          message: "Cannot able to list notification."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -478,7 +478,7 @@ exports.sendOtp = [
           messagingServiceSid: process.env.MESSAGE_SERVICE_ID,
           to: req.body.phone
         })
-        .then(console.log("otp sent"))
+        .then()
         .done();
       let data = await OtpSchema.findOne({
         phone: req.body.phone
@@ -495,18 +495,16 @@ exports.sendOtp = [
           new: true
         }, function (err, docs) {
           if (err) {
-            console.log(err),
-              res.status(200).json({
-                status: false,
-                message: "couldnt send OTP"
-              });
+            res.status(204).json({
+              status: false,
+              message: "Could not send OTP."
+            });
           } else {
-            console.log("Doc : ", docs),
-              res.status(200).json({
-                status: true,
-                message: "OTP sent successfully",
+            res.status(200).json({
+              status: true,
+              message: "OTP sent successfully.",
 
-              });
+            });
           }
         });
 
@@ -526,19 +524,19 @@ exports.sendOtp = [
 
           });
         } catch (err) {
-          res.status(200).json({
+          res.status(204).json({
             status: false,
-            message: "couldnt send OTP"
+            message: "Could not send OTP."
           });
         }
       }
 
 
     } catch (err) {
-      console.log(err);
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -562,13 +560,13 @@ exports.otpAuth = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "otp auth successful",
+          message: "OTP auth successful.",
           data
         });
       } else {
         res.status(203).json({
           status: false,
-          message: "Incorrect OTP",
+          message: "Incorrect OTP.",
           data
         });
       }
@@ -576,7 +574,8 @@ exports.otpAuth = [
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -599,25 +598,25 @@ exports.forgotPassword = [
       }, {
         new: true
       });
-      console.log(data);
+
 
       if (data) {
         res.status(200).json({
           status: true,
-          message: "password updated successfully"
+          message: "Password updated successfully."
         });
       } else {
-        res.status(500).json({
+        res.status(204).json({
           status: false,
-          message: "couldn't update password!!!"
+          message: "Key mismatch."
         });
       }
 
     } catch (err) {
-      console.log(err);
-      res.status(404).json({
+      res.status(500).json({
         status: false,
-        message: "user id or Key mismatch"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -635,7 +634,6 @@ exports.otpAuth2 = [
         otp: req.body.otp
 
       });
-      console.log(data);
 
       let newKey = '';
       for (let i = 0; i < 10; i++) {
@@ -652,63 +650,31 @@ exports.otpAuth2 = [
         new: true
       });
       if (userdata) {
-        console.log("found+++++++++++++++++++++++++++++");
 
       } else {
-        console.log("____________________________notfound");
+
       }
 
 
       if (data) {
         res.status(200).json({
           status: true,
-          message: "otp auth successful",
+          message: "otp auth successful.",
           Key: newKey
         });
       } else {
         res.status(203).json({
           status: false,
-          message: "Incorrect OTP",
+          message: "Incorrect OTP.",
 
         });
       }
 
     } catch (err) {
-      console.log(err);
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
-      });
-    }
-  }
-];
-
-
-
-exports.call = [
-  sanitizeBody("phone"),
-  async (req, res) => {
-    try {
-
-      console.log(req.body.phone);
-      client.calls
-        .create({
-          url: 'http://demo.twilio.com/docs/voice.xml',
-          to: req.body.phone,
-          from: '+12018796637',
-        })
-        .then(call => console.log(call.sid));
-      res.status(200).json({
-        status: true,
-        message: "Something went wrong"
-      });
-
-
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }

@@ -9,15 +9,16 @@ exports.checkAdmin = async (req, res, next) => {
     if (data) {
       next();
     } else {
-      res.status(200).json({
+      res.status(204).json({
         status: false,
-        message: "This user is not a admin"
+        message: "This user is not an admin."
       });
     }
   } catch (err) {
-    res.status(200).json({
+    res.status(500).json({
         status: false,
-        message: "This user is not a admin"
+        message: "Something went wrong!!!",
+        error:err
       });
   }
 };
@@ -26,19 +27,19 @@ exports.checkAdmin = async (req, res, next) => {
 exports.checkUser = async (req, res, next) => {
   try {
     let data = await User.findOne({ _id: req.body.userId });
-    console.log(req.body.userId);
     if (data) {
       next();
     } else {
-      res.status(200).json({
+      res.status(204).json({
         status: false,
-        message: "This user is not a customer"
+        message: "This user is not a customer."
       });
     }
   } catch (err) {
-    res.status(200).json({
+    res.status(500).json({
         status: false,
-        message: "This user is not a customer"
+        message: "Something went wrong!!!",
+        error:err
       });
   }
 };
@@ -65,22 +66,23 @@ exports.checkHost = async (req, res, next) => {
         next();
       }
       else{
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "This user is Blocked"
+          message: "This user is blocked."
         });
       }
      
     } else {
-      res.status(200).json({
+      res.status(204).json({
         status: false,
-        message: "This user is not a host"
+        message: "This user is not a host."
       });
     }
   } catch (err) {
     res.status(200).json({
         status: false,
-        message: "This user is not a host"
+        message: "Something went wrong!!!",
+        error:err
       });
   }
 };
@@ -94,22 +96,23 @@ exports.postcheckHost = async (req, res, next) => {
         next();
       }
       else{
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "This user is Blocked"
+          message: "This user is blocked."
         });
       }
      
     } else {
-      res.status(200).json({
+      res.status(204).json({
         status: false,
-        message: "This user is not a host"
+        message: "This user is not a host."
       });
     }
   } catch (err) {
-    res.status(200).json({
+    res.status(500).json({
         status: false,
-        message: "This user is not a host"
+        message: "Something went wrong!!!",
+        error:err
       });
   }
 };

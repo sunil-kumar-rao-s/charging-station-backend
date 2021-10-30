@@ -1,5 +1,10 @@
-const { body, validationResult } = require("express-validator");
-const { sanitizeBody } = require("express-validator/filter");
+const {
+  body,
+  validationResult
+} = require("express-validator");
+const {
+  sanitizeBody
+} = require("express-validator/filter");
 const Watchlist = require("../schema/watchlist");
 
 exports.addWatchList = [
@@ -8,15 +13,18 @@ exports.addWatchList = [
   async (req, res) => {
     try {
       let findDuplicate = await Watchlist.findOne({
-        $and: [
-          { userId: req.body.userId },
-          { chargingPointId: req.body.chargingPointId }
+        $and: [{
+            userId: req.body.userId
+          },
+          {
+            chargingPointId: req.body.chargingPointId
+          }
         ]
       });
       if (findDuplicate) {
-        res.status(404).json({
+        res.status(204).json({
           status: false,
-          message: "Watchlist already added"
+          message: "Watchlist already exist."
         });
       } else {
         let watchList = new Watchlist({
@@ -27,19 +35,20 @@ exports.addWatchList = [
         if (data) {
           res.status(200).json({
             status: true,
-            message: "Watchlist added successfully"
+            message: "Watchlist added successfully."
           });
         } else {
           res.status(204).json({
             status: false,
-            message: "Watchlist not inserted successfully"
+            message: "Watchlist not inserted."
           });
         }
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went wrong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -51,26 +60,30 @@ exports.deleteWatchlist = [
   async (req, res) => {
     try {
       let data = await Watchlist.findOneAndDelete({
-        $and: [
-          { userId: req.body.userId },
-          { chargingPointId: req.body.chargingPointId }
+        $and: [{
+            userId: req.body.userId
+          },
+          {
+            chargingPointId: req.body.chargingPointId
+          }
         ]
       });
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Particular watchlist deleted successfully"
+          message: "Watchlist deleted successfully."
         });
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "Particular watchlist not deleted successfully"
+          message: "Could not able to delete Watchlist."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Something went werong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -89,27 +102,28 @@ exports.getWatchList = [
           let data = await checkwatchList(watchListData, req.body.userId);
           res.status(200).json({
             status: true,
-            message: "watchlist listed successfully",
+            message: "Watchlist listed successfully.",
             watchList: data
           });
         } catch (err) {
-          console.log("first---> ", err);
+
           res.status(500).json({
             status: false,
-            message: "Something went werong"
+            message: "Something went wrong!!!",
+            error: err
           });
         }
       } else {
-        res.status(200).json({
-          status: 200,
-          message: "Watchlist record not found"
+        res.status(204).json({
+          status: false,
+          message: "Watchlist record not found."
         });
       }
     } catch (err) {
-      console.log("last---> ", err);
       res.status(500).json({
         status: false,
-        message: "Something went werong"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -118,10 +132,13 @@ exports.getWatchList = [
 async function checkwatchList(watchListData, userId) {
   let j = 0;
   let newData = [];
-  console.log(watchListData);
   for (i = 0; i < watchListData.length; i++) {
     let isWatchlist = await Watchlist.findOne({
-      $and: [{ _id: watchListData[i]._id }, { userId: userId }]
+      $and: [{
+        _id: watchListData[i]._id
+      }, {
+        userId: userId
+      }]
     });
     if (isWatchlist) {
       watchListData[i].isWatchList = true;

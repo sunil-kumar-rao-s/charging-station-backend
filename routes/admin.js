@@ -11,7 +11,7 @@ router.get("/", function(req, res, next) {
   res.send("admin controller called");
 });
 
-router.post("/addadmin", adminController.createAdminUser);
+router.post("/addadmin",common.checkAdmin, adminController.createAdminUser);
 router.post("/adminlogin", adminController.login);
 router.post("/getuserlist", common.checkAdmin, adminController.getAllUserList);
 router.post('/updaterstatus',common.checkAdmin, adminController.updateUserStatus);

@@ -33,7 +33,7 @@ exports.addChargingPort = [
     try {
       let data = await ports.save();
       if (data) {
-        console.log('Charging Ports', data);
+        
         let chargingStation = await chargingPoints.findOneAndUpdate({
           _id: req.body.chargingstationId
         }, {
@@ -44,25 +44,26 @@ exports.addChargingPort = [
         if (chargingStation) {
           res.status(200).json({
             status: true,
-            message: 'chargining port created successfully'
+            message: 'Chargining port added successfully.'
           })
         } else {
-          res.status(200).json({
+          res.status(204).json({
             status: false,
-            message: 'Charging port not not created successfully',
+            message: 'Charging station not found.',
           })
         }
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: 'Charginig ports not created successfully',
+          message: 'Charginig ports not created.',
         });
       }
     } catch (err) {
-      console.log(err);
+      
       res.status(500).json({
         status: false,
-        message: 'SOmething went wrong',
+        message: 'Something went wrong!!!',
+        error:err
       });
     }
   }
@@ -109,30 +110,31 @@ exports.createChargingPoing = [
         pointName: req.body.pointName
       });
       if (findData) {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: "charging station name is already in use"
+          message: "Charging station name is already in use."
         });
       } else {
         let data = await chargingPoint.save();
         if (data) {
           res.status(200).json({
             status: true,
-            message: "Charging station added sucessfully",
+            message: "Charging station added sucessfully.",
             charginPoint: data
           });
         } else {
-          res.status(500).json({
+          res.status(204).json({
             status: false,
-            message: "Something went wrong. Please try again later"
+            message: "Cannot able to create charging station."
           });
         }
       }
     } catch (err) {
-      console.log(err)
+      
       res.status(500).json({
         status: false,
-        message: "Something went wrong. Please try again later"
+        message: "Something went wrong!!!",
+        error:err
       });
     }
   }
@@ -179,20 +181,22 @@ exports.updateChargingPoint = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Charging point updated successfully.",
+          message: "Charging station updated successfully.",
           charginPoint: data
         });
       } else {
-        res.status(500).json({
+        res.status(204).json({
           status: false,
-          charginPoint: data
+          message: "Cannot able to update charging station.",
+          
         });
       }
     } catch (err) {
-      console.log(err);
+      
       res.status(500).json({
         status: false,
-        message: "Charging point not updated successfully."
+        message: "Something went wrong!!!",
+        error:err
       });
     }
   }
@@ -202,28 +206,29 @@ exports.getChargingPointList = [
  /// sanitizeBody("chargingPointId").trim(),
   async (req, res) => {
     try {
-      console.log("--------------------+++++++++++++++++++++++++++++++");
+      
       var data = await chargingPoints.find({}).populate(
         "port"
       );
-      console.log("--------------------"+ data);
+     
       if (data) {
         res.status(200).json({
           status: true,
-          message: "chargining points listed successfully",
+          message: "chargining stations listed successfully.",
           charginPoint: data
         });
       } else {
-        res.status(500).json({
+        res.status(204).json({
           status: false,
-          message: "Charging point not updated successfully."
+          message: "Cannot able to list charging station."
         });
       }
     } catch (err) {
-      console.log(err);
+      
       res.status(500).json({
         status: false,
-        message: "Something went wrong."
+        message: "Something went wrong!!!",
+        error:err
       });
     }
   }
@@ -247,19 +252,20 @@ exports.changetPointStatus = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Chargeing point status update successfully",
+          message: "Charging station status updated successfully.",
           charginPoint: data
         });
       } else {
-        res.status(500).json({
+        res.status(204).json({
           status: false,
-          message: "Charging point status not updated successfully"
+          message: "Cannot able to update charging station status."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Charging point status not updated successfully"
+        message: "Something went wrong!!!",
+        error:err
       });
     }
   }
@@ -276,18 +282,19 @@ exports.deletetPoint = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Chargeing point deleted sucessfully"
+          message: "Charging station deleted sucessfully."
         });
       } else {
-        res.status(500).json({
+        res.status(204).json({
           status: false,
-          message: "Chargeing point not deleted sucessfully"
+          message: "Cannot able to delete charging station."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Chargeing point not deleted sucessfully"
+        message: "Something went wrong!!!",
+        error:err
       });
     }
   }
@@ -313,19 +320,20 @@ exports.getCharginingPointsBylocation = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: 'Chargining point listed sucessfully',
+          message: 'Chargining stations listed sucessfully',
           charginPoint: data,
         })
       } else {
-        res.status(200).json({
+        res.status(204).json({
           status: false,
-          message: 'Chargining point not listed sucessfully'
+          message: "Cannot able to list charging stations."
         })
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: 'Something went wrong',
+        message: 'Something went wrong!!!',
+        error:err
       })
     }
   }

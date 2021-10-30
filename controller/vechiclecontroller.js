@@ -18,9 +18,9 @@ exports.addVechicle = [
       vechicleNumber: req.body.vechicleNumber
     });
     if (findDuplicate) {
-      res.status(500).json({
+      res.status(204).json({
         status: false,
-        message: "Vechicle Number already exsist"
+        message: "Vehicle number already exist."
       });
     } else {
       try {
@@ -42,19 +42,20 @@ exports.addVechicle = [
         if (data) {
           res.status(200).json({
             status: true,
-            message: "Vechicle Inserted Sucessfully",
+            message: "Vehicle inserted sucessfully.",
             vechicle: vechicleData
           });
         } else {
-          res.status(500).json({
+          res.status(204).json({
             status: false,
-            message: "Vechicle not Inserted Sucessfully"
+            message: "Vehicle not inserted."
           });
         }
       } catch (err) {
         res.status(500).json({
           status: false,
-          message: "Vechicle Number already exsisit"
+          message: "Something went wrong!!!",
+          error: err
         });
       }
     }
@@ -75,19 +76,20 @@ exports.getVechicleList = [
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Vechicle list populated successfully",
+          message: "Vehicles listed successfully.",
           vechicles: data
         });
       } else {
-        res.status(500).json({
+        res.status(204).json({
           status: false,
-          message: "Vechicle list not populated successfully"
+          message: "Cannot able to list Vechicles."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: false,
-        message: "Vechicle list not populated successfully"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }
@@ -114,9 +116,9 @@ exports.updateVechicleList = [
     });
 
     if (duplicateData) {
-      res.status(409).json({
+      res.status(204).json({
         status: false,
-        message: "Vechicle Number already exsist"
+        message: "Vehicle Number already exist."
       });
     } else {
       let updatedData = {
@@ -140,20 +142,20 @@ exports.updateVechicleList = [
         if (data) {
           res.status(200).json({
             status: true,
-            message: "vechicle updated sucessfully",
+            message: "Vehicle updated sucessfully.",
             vechicle: data
           });
         } else {
-          res.status(400).json({
+          res.status(204).json({
             status: false,
-            message: "vechicle not updated sucessfully"
+            message: "Vehicle not updated."
           });
         }
       } catch (err) {
-        console.log("update error===> ", err);
         res.status(500).json({
           status: false,
-          message: "Something went wrong. Please try again later"
+          message: "Something went wrong!!!",
+          error: err
         });
       }
     }
@@ -169,22 +171,22 @@ exports.deleteVechicle = [
         _id: req.body.vechicleId,
         userId: req.body.userId
       });
-      console.log("vechile delete status====> ", data);
       if (data) {
         res.status(200).json({
           status: true,
-          message: "Vechicle deleted sucessfully"
+          message: "Vehicle deleted sucessfully."
         });
       } else {
-        res.status(400).json({
-          status: true,
-          message: "Vechicle not deleted sucessfully"
+        res.status(204).json({
+          status: false,
+          message: "Could not able to delete vehicle."
         });
       }
     } catch (err) {
       res.status(500).json({
         status: true,
-        message: "Vechicle not deleted sucessfully"
+        message: "Something went wrong!!!",
+        error: err
       });
     }
   }

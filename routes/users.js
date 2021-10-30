@@ -14,18 +14,18 @@ router.get('/', function(req, res, next) {
 
 router.post('/adduser',useController.createUser);
 router.post('/login',useController.login);
-router.get('/viewprofile', useController.getProfile);
-router.post('/updateprofile', useController.updateProfile);
-router.post('/changepassword', useController.updatePassword);
-router.post('/updatewallet', useController.updateWallet);
-router.post('/transcationhistory',useController.getTranscationDetails);
+router.get('/viewprofile',common.checkUser, useController.getProfile);
+router.post('/updateprofile',common.checkUser, useController.updateProfile);
+router.post('/changepassword',common.checkUser, useController.updatePassword);
+router.post('/updatewallet',common.checkUser, useController.updateWallet);
+router.post('/transcationhistory',common.checkUser,useController.getTranscationDetails);
 router.post('/getstaticpage',useController.getStaticPage);
 router.post('/getnotifications',useController.getNotification);
-router.post('/sendotp',useController.sendOtp);
-router.post('/otpauth',useController.otpAuth);
-router.post('/forgotpassword', useController.forgotPassword);
-router.post('/otpvalidateforgetpass',useController.otpAuth2);
-router.post('/call',useController.call);
+router.post('/sendotp',common.checkUser,useController.sendOtp);
+router.post('/otpauth',common.checkUser,useController.otpAuth);
+router.post('/forgotpassword',common.checkUser, useController.forgotPassword);
+router.post('/otpvalidateforgetpass',common.checkUser,useController.otpAuth2);
+
 
 
 

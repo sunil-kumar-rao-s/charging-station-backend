@@ -36,17 +36,17 @@ exports.addPack = [
 
             res.status(200).json({
                 status: true,
-                message: "Coin Pack saved Successfully",
+                message: "Coin pack added successfully.",
                 pack
             });
 
 
 
         } catch (err) {
-            console.log(err);
             res.status(500).json({
                 status: false,
-                message: "Something went Wrong"
+                message: "Something went wrong!!!",
+                error: err
             });
         }
     }
@@ -59,28 +59,26 @@ exports.viewPack = [
 
             const packdata = await CoinpackSchema.find({}, function (err, docs) {
                 if (err) {
-                    console.log(err);
-                    res.status(500).json({
+                    res.status(204).json({
                         status: false,
-                        message: "Something went Wrong",
-                        err
+                        message: "Cannot able to list coin packs.",
+                        error: err
                     });
 
                 } else {
                     res.status(200).json({
                         status: true,
-                        message: "Coin Packs listed Successfully",
+                        message: "Coin packs listed successfully.",
                         packdata: docs
                     });
                 }
             });
 
         } catch (err) {
-            console.log(err);
             res.status(500).json({
                 status: false,
-                message: "Internal Server Error",
-                err
+                message: "Something went wrong!!!",
+                error: err
             });
         }
     }
@@ -91,30 +89,87 @@ exports.deletePack = [
     async (req, res) => {
         try {
 
-            const packdata = await CoinpackSchema.deleteOne({packId:req.body.packId}, function (err, docs) {
+            const packdata = await CoinpackSchema.deleteOne({
+                packId: req.body.packId
+            }, function (err, docs) {
                 if (err) {
-                    console.log(err);
-                    res.status(500).json({
+                    res.status(204).json({
                         status: false,
-                        message: "Something went Wrong",
-                        err
+                        message: "Cannot able to delete coin pack.",
+                        error: err
                     });
 
                 } else {
                     res.status(200).json({
                         status: true,
-                        message: "Coin Packs deleted Successfully",
-                        
+                        message: "Coin Pack deleted Successfully",
+
                     });
                 }
             });
 
         } catch (err) {
-            console.log(err);
             res.status(500).json({
                 status: false,
-                message: "Internal Server Error",
-                err
+                message: "Something went wrong!!!",
+                error: err
+
+            });
+        }
+    }
+];
+
+exports.editPack = [
+    sanitizeBody("packId").trim(),
+    sanitizeBody("packName").trim(),
+    sanitizeBody("packAmount").trim(),
+    sanitizeBody("packDiscount").trim(),
+    sanitizeBody("isDiscount").trim(),
+    sanitizeBody("numberOfCoins").trim(),
+    sanitizeBody("description").trim(),
+    async (req, res) => {
+        try {
+
+            const editpack = {
+
+                packName: req.body.packName,
+                packAmount: req.body.packAmount,
+                packDiscount: req.body.packDiscount,
+                isDiscount: req.body.isDiscount,
+                numberOfCoins: req.body.numberOfCoins,
+                description: req.body.description,
+
+
+            };
+            let packdata = await CoinpackSchema.findOneAndUpdate({
+                packId: req.body.packId
+            }, {
+                $set: editpack
+            }, {
+                new: true
+            }, function (err, docs) {
+                if (err) {
+                    res.status(204).json({
+                        status: false,
+                        message: "Coin pack not found.",
+                        err
+                    });
+
+
+                } else {
+                    res.status(200).json({
+                        status: true,
+                        message: "Coin pack updated successfully.",
+                        docs
+                    });
+                }
+            });
+
+        } catch (err) {
+            res.status(500).json({
+                status: false,
+                message: "Something went wrong!!!",
+                error: err
             });
         }
     }

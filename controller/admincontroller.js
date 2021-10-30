@@ -1160,8 +1160,9 @@ exports.deleteTimeSlot = [
   async (req, res) => {
     try {
       
-      await ChargingPoints.updateOne({_id: req.body.chargingstationId},
+     let data = await ChargingPoints.updateOne({_id: req.body.chargingstationId},
         {$pull:{price:{_id:req.body.timeSlotId}}},{multi:true});
+      if(data){
       await TimeSlot.deleteOne({_id: req.body.timeSlotId},
         function(err,docs){
           if(err){
@@ -1177,7 +1178,7 @@ exports.deleteTimeSlot = [
             });
           }
         });
-      
+      }
 
     } catch (err) {
       res.status(500).json({

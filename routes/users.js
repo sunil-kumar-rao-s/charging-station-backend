@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/adduser',useController.createUser);
 router.post('/login',useController.login);
-router.get('/viewprofile',common.checkUser, useController.getProfile);
+router.get('/viewprofile', useController.getProfile);
 router.post('/updateprofile',common.checkUser, useController.updateProfile);
 router.post('/changepassword',common.checkUser, useController.updatePassword);
 router.post('/updatewallet',common.checkUser, useController.updateWallet);

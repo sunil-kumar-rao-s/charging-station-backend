@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+
 
 const app = express();
 app.use(bodyParser.urlencoded({
@@ -13,7 +14,7 @@ router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 
-router.post('/addhost', hostController.createHost);
+router.post('/addhost',common.checkAdmin, hostController.createHost);
 router.post('/login', hostController.login);
 //router.get('/getbookings', hostController.getBookings);
 router.get('/getprofile',common.checkHost, hostController.getProfile);

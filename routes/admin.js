@@ -33,4 +33,8 @@ router.post("/getemailsubs", common.checkAdmin, adminController.getemailsubs);
 router.post("/getappuserlogins", common.checkAdmin, adminController.getAppuserlogins);
 router.post("/gethostforms", common.checkAdmin, adminController.gethostform);
 router.post("/getinvestorforms", common.checkAdmin, adminController.getinvestorform);
+router.post("/getsalt", common.checkAdmin, adminController.getSalt);
+router.post("/decryptpass", common.checkAdmin, adminController.decryptPass);
+router.post("/encryplainpasswords", common.checkAdmin, adminController.encryUserPassword);
+router.post("/addstationimages", common.checkAdmin, adminController.addStationImages);
 module.exports = router;

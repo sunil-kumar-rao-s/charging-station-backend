@@ -17,6 +17,9 @@ const UserSchema = new Schema(
     isVerified: {type:String,default:"false"},
     Key: {type:String,default:"null"},
     salt: String,
+
+    //password: String,
+    
   
      
   },
@@ -26,25 +29,25 @@ const UserSchema = new Schema(
 );
 
 UserSchema
-  .virtual("password")
-  .set(function (password) {
+.virtual("password")
+.set(function (password) {
     this._password = password;
     this.salt = uuidv1();
     this.encry_password = this.securePassword(password);
-  })
-  .get(function () {
+})
+.get(function () {
     return this._password;
-  });
+});
 
   
 
-  UserSchema.methods = {
+UserSchema.methods = {
   autheticate: function (plainpassword) {
     console.log(this.securePassword(plainpassword));
     return this.securePassword(plainpassword) === this.encry_password;
-  },
+},
 
-  securePassword: function (plainpassword) {
+securePassword: function (plainpassword) {
     if (!plainpassword) return "";
     try {
       return crypto

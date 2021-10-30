@@ -25,6 +25,9 @@ const Emailsubs = require('../schema/emailsub');
 const Userlogins = require('../schema/userlogins');
 const Hostformschema = require('../schema/hostform');
 const Investorformschema = require('../schema/investorform');
+const crypto = require("crypto");
+const uuidv1 = require("uuid/v1");
+const { findOne } = require("../schema/adminmodel");
 
 exports.createAdminUser = [
   sanitizeBody("userName"),
@@ -818,6 +821,157 @@ exports.getinvestorform = [
       res.status(500).json({
         status: false,
         message: "Something went wrong."
+      });
+    }
+  }
+];
+
+
+exports.getSalt = [
+  sanitizeBody("password"),
+  
+  async (req, res) => {
+    try {
+     
+      let salt = uuidv1();
+      let encry_password = crypto
+      .createHmac("sha256", salt)
+      .update(req.body.password)
+      .digest("hex");
+    
+      let hashData = {
+        salt: salt,
+        encry_password: encry_password
+      }
+      res.status(200).json({
+        status: true,
+        message: "hashed and salted successfully",
+        hashData
+      });
+      
+
+
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Some thing went wrong."
+      });
+    }
+  }
+];
+
+exports.decryptPass = [
+  sanitizeBody("salt"),
+  sanitizeBody("plain_password"),
+  
+  async (req, res) => {
+    try {
+     
+      let salt = req.body.salt;
+      let encry_password = crypto
+      .createHmac("sha256", salt)
+      .update(req.body.plain_password)
+      .digest("hex");
+    
+      let hashData = {
+        salt: salt,
+        password: encry_password
+      }
+      res.status(200).json({
+        status: true,
+        message: "hashed and salted successfully",
+        hashData
+      });
+      
+
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Some thing went wrong."
+      });
+    }
+  }
+];
+
+exports.encryUserPassword = [
+  sanitizeBody("userId"),
+  
+  async (req, res) => {
+    try {
+      
+      let userData = await User.findOne({_id:req.body.userId});
+      console.log('---------------------------------------------'+userData.password);
+      
+      let salt = uuidv1();
+      let encry_password = crypto
+      .createHmac("sha256", salt)
+      .update(userData.password)
+      .digest("hex");
+    
+      let hashData = {
+        salt: salt,
+        encry_password: encry_password
+      }
+
+      await User.findOneAndUpdate({_id:req.body.userId},
+        
+         {  $set:{ salt: salt,
+          encry_password: encry_password,
+        password:''}},{upsert:true},function(err,docs){
+            if(err){
+              console.log(err);
+            }
+            else{
+              console.log(docs);
+              res.status(200).json({
+                status: true,
+                message: "hashed and salted successfully",
+                hashData
+              });
+            }
+          }
+        );
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Some thing went wrong."
+      });
+    }
+  }
+];
+
+exports.addStationImages = [
+  sanitizeBody("adminId"),
+  sanitizeBody("chargingstationId"),
+  sanitizeBody("imageLink"),
+  
+  async (req, res) => {
+    try {
+      
+      let linkdata = await ChargingPoints.findByIdAndUpdate({_id:req.body.chargingstationId},
+        {$addToSet:{imageLink:[req.body.imageLink]}},{upsert:true},function(err,docs){
+          if(err){
+            console.log(err);
+          }
+          else{
+            res.status(200).json({
+              status: true,
+              message: "Image Link inserted Successfully",
+              docs
+            });
+          }
+        });
+     
+        
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Some thing went wrong."
       });
     }
   }

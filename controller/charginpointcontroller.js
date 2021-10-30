@@ -11,6 +11,7 @@ const charginingPorts = require("../schema/charginingport");
 exports.addChargingPort = [
   sanitizeBody('chargingstationId').trim(),
   
+  sanitizeBody('chargerSpecs').trim(),
   sanitizeBody('chargerType').trim(),
   sanitizeBody('maxChargingSpeed').trim(),
   sanitizeBody("hostId").trim(),
@@ -26,6 +27,8 @@ exports.addChargingPort = [
       hostId: req.body.hostId,
       description: req.body.description,
       isOnline: req.body.isOnline,
+      chargerSpecs:req.body.chargerSpecs,
+      
     });
     try {
       let data = await ports.save();
@@ -78,6 +81,8 @@ exports.createChargingPoing = [
   sanitizeBody("businessName").trim(),
   sanitizeBody("businessDescription").trim(),
   sanitizeBody("portCount").trim(),
+  sanitizeBody('chargerSpecs').trim(),
+  sanitizeBody('chargerType').trim(),
   async (req, res) => {
     let location = {
       type: "Point",
@@ -95,6 +100,8 @@ exports.createChargingPoing = [
       location: location,
       hostId: req.body.hostId,
       portCount: req.body.portCount,
+      chargerSpecs:req.body.chargerSpecs,
+      chargerType:req.body.chargerType,
     });
 
     try {
@@ -158,7 +165,9 @@ exports.updateChargingPoint = [
         address: req.body.address,
         pricePerHour: req.body.pricePerHour,
         location: location,
-        hostId: req.body.hostId
+        hostId: req.body.hostId,
+        chargerSpecs:req.body.chargerSpecs,
+        chargerType:req.body.chargerType,
       };
       let data = await chargingPoints.findOneAndUpdate({
         _id: req.body.chargingPointId

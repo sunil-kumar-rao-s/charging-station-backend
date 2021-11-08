@@ -1160,8 +1160,8 @@ exports.deleteTimeSlot = [
   async (req, res) => {
     try {
       
-     let data = await ChargingPoints.updateOne({_id: req.body.chargingstationId},
-        {$pull:{price:{_id:req.body.timeSlotId}}});
+     let data = await ChargingPoints.findByIdAndUpdate({_id: req.body.chargingstationId},
+        {$pull:{'price':req.body.timeSlotId}},{new:true,upsert:true});
       if(data){
       await TimeSlot.findByIdAndDelete({_id: req.body.timeSlotId},
         function(err,docs){
@@ -1172,6 +1172,7 @@ exports.deleteTimeSlot = [
             });
           }
           else{
+            console.log("docs---------------------"+ docs)
             res.status(200).json({
               status: true,
               message: "Pricing details deleted successfully."
@@ -1181,6 +1182,7 @@ exports.deleteTimeSlot = [
       }
 
     } catch (err) {
+      console.log(err);
       res.status(500).json({
         status: false,
         message: "Something went wrong!!!",

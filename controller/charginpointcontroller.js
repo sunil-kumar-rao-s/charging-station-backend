@@ -209,6 +209,8 @@ exports.getChargingPointList = [
       
       var data = await chargingPoints.find({}).populate(
         "port"
+      ).populate(
+        "price"
       );
      
       if (data) {

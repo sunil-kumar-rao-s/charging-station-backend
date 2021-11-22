@@ -966,7 +966,6 @@ exports.encryUserPassword = [
       let userData = await User.findOne({
         _id: req.body.userId
       });
-      console.log('---------------------------------------------' + userData.password);
 
       let salt = uuidv1();
       let encry_password = crypto
@@ -994,9 +993,9 @@ exports.encryUserPassword = [
         },
         function (err, docs) {
           if (err) {
-            console.log(err);
+            
           } else {
-            console.log(docs);
+           
             res.status(200).json({
               status: true,
               message: "hashed and salted successfully",
@@ -1007,7 +1006,7 @@ exports.encryUserPassword = [
       );
 
     } catch (err) {
-      console.log(err);
+     
       res.status(500).json({
         status: false,
         message: "Some thing went wrong."
@@ -1172,7 +1171,7 @@ exports.deleteTimeSlot = [
             });
           }
           else{
-            console.log("docs---------------------"+ docs)
+           
             res.status(200).json({
               status: true,
               message: "Pricing details deleted successfully."
@@ -1182,7 +1181,7 @@ exports.deleteTimeSlot = [
       }
 
     } catch (err) {
-      console.log(err);
+     
       res.status(500).json({
         status: false,
         message: "Something went wrong!!!",

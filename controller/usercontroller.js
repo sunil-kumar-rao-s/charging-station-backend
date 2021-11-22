@@ -69,6 +69,7 @@ exports.createUser = [
             data
           });
         } catch (err) {
+         
           res.status(203).json({
             status: false,
             message: "Could not able to create user.",

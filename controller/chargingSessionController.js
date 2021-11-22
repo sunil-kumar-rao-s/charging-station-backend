@@ -25,11 +25,6 @@ exports.startSession = [
 
   async (req, res) => {
     try {
-      console.log("------------------------------------------------------------------------------------------------------in sessionstahfkjgdsahkfgdksgfdsgdrt");
-
-      
-
-
       const sid = Date.now() + req.body.uid + req.body.userId;
       const startSession = new chargingSessionModel({
         uid: req.body.uid,
@@ -43,7 +38,6 @@ exports.startSession = [
 
       });
 
-      console.log("--------------------------------------------------------------11");
       const userData = new userModel({
 
         currentSessionId: sid
@@ -68,7 +62,7 @@ exports.startSession = [
           $set: updateValue1
         }, (error, doc) => {
 
-          console.log("+++++++++++++++" + doc);
+         
 
         });
 
@@ -93,7 +87,7 @@ exports.startSession = [
           data
         });
       } catch (err) {
-        console.log(err);
+       
         res.status(400).json({
           status: false,
           message: "Cannot create the session, please try again.."
@@ -105,20 +99,20 @@ exports.startSession = [
          isOnline:"true"
         };
         try {
-          console.log("inside timer try" + timerValue);
+          
           portModel.findOneAndUpdate({
             _id: req.body.uid
           }, {
             isOnline: "true"
           }, (error, doc) => {
   
-            console.log("++++++++++---------+++++" + doc);
+           
   
           });
          
          
         } catch (err) {
-         console.log(err);
+        
         }
 
 
@@ -148,8 +142,7 @@ exports.endSession = [
 
   async (req, res) => {
     try {
-      console.log("------------------------------------------------------------------------------------------------------in end session");
-
+     
 
       const endSession = new chargingSessionModel({
         // uid: req.body.uid,
@@ -242,15 +235,13 @@ exports.showAllUserSessions = [
       });
 
       try {
-        console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++inside inner try block");
 
 
         let data = await showSessionmodel.find({
           userId: req.body.userId
         }, (error, doc) => {
 
-          console.log("-----------------------------------------22" + doc);
-          console.log("---------------------------------------3--22" + error);
+          
         });
 
 
@@ -261,7 +252,7 @@ exports.showAllUserSessions = [
         });
 
       } catch (err) {
-        console.log("11111111111111111111111111111111111111111111111111111111111111111111" + err);
+       
         res.status(400).json({
           status: false,
           message: "inside block error"
@@ -305,7 +296,7 @@ exports.getAllSessions = [
         });
 
       } catch (err) {
-        console.log("11111111111111111111111111111111111111111111111111111111111111111111" + err);
+        
         res.status(400).json({
           status: false,
           message: "inside block error"
@@ -356,6 +347,7 @@ exports.getChargerdetails = [
      
 
     } catch (err) {
+      
       res.status(400).json({
         status: false,
         message: "Something went wrong, please check again"

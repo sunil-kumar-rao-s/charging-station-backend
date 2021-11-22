@@ -68,7 +68,7 @@ exports.createHost = [
           data: data
         });
       } catch (err) {
-
+        
         res.status(203).json({
           status: false,
           message: "Cannot able to add the host."
@@ -77,6 +77,7 @@ exports.createHost = [
       }
 
     } catch (err) {
+      
       res.status(500).json({
         status: false,
         message: "Something went wrong!!!",
@@ -92,47 +93,40 @@ exports.login = [
   sanitizeBody("password").trim(),
   async (req, res) => {
     try {
-      let data = await Host.findOne({
-        $and: [{
-            password: req.body.password
-          },
-          {
-            $or: [{
-              phone: req.body.phone
-            }, {
-              email: req.body.email
-            }]
-          }
-        ]
-      }).select("-password");
-      if (data) {
-        let lastDate = Date.now();
-        let lastloginDate = {
-          lastActiveAt: lastDate
-        };
-        let updateData = await Host.findOneAndUpdate({
-          _id: data._id
-        }, {
-          $set: lastloginDate
-        }, {
-          new: true
-        });
-        const jwtToken = jwt.sign({
-          email: req.body.email
-        }, "accessToken");
-        data.lastActiveAt = lastDate;
-        res.status(200).json({
-          status: true,
-          message: "Host login successful.",
-          data: data
-        });
-      } else {
-        res.status(203).json({
+      let data = Host.findOne({
+        phone: req.body.phone
+      },(err,client)=>{
+        if (err || !client) {
+        return res.status(203).json({
           status: false,
-          message: "invalid username or password."
+          message: "Host not registered."
         });
       }
+      if (!client.autheticate(req.body.password)) {
+        return res.status(203).json({
+          status: false,
+          message: "Invalid phone number or password."
+        });
+      }
+     
+     
+      Host.findOneAndUpdate({
+        _id: client._id
+      }, {
+        $set: {lastActiveAt: Date.now()}
+      }, {
+        new: true
+      });
+      res.status(200).json({
+        status: true,
+        message: "Host logged in successfully.",
+        data: client
+      });
+      });
+      
+     
     } catch (err) {
+      
       res.status(500).json({
         status: false,
         message: "Something went wrong!!!",

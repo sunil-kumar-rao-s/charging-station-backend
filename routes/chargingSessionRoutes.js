@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }))
-console.log("------------------------------------------------------in charging routes");
+
 
 const chargingSessionController = require('../controller/chargingSessionController');
 

@@ -967,6 +967,8 @@ exports.encryUserPassword = [
         _id: req.body.userId
       });
 
+      console.log(userData)
+        console.log(userData.password)
       let salt = uuidv1();
       let encry_password = crypto
         .createHmac("sha256", salt)
@@ -1006,10 +1008,11 @@ exports.encryUserPassword = [
       );
 
     } catch (err) {
-     
+      console.log(err)
       res.status(500).json({
         status: false,
-        message: "Some thing went wrong."
+        message: "Some thing went wrong.",
+        err: err
       });
     }
   }

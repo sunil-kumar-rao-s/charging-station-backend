@@ -18,7 +18,7 @@ const UserSchema = new Schema(
     Key: {type:String,default:"null"},
     salt: String,
 
-    //password: String,
+ password: String,
     
   
      
@@ -28,36 +28,36 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema
-.virtual("password")
-.set(function (password) {
-    this._password = password;
-    this.salt = uuidv1();
-    this.encry_password = this.securePassword(password);
-})
-.get(function () {
-    return this._password;
-});
+// UserSchema
+// .virtual("password")
+// .set(function (password) {
+//     this._password = password;
+//     this.salt = uuidv1();
+//     this.encry_password = this.securePassword(password);
+// })
+// .get(function () {
+//     return this._password;
+// });
 
   
 
-UserSchema.methods = {
-  autheticate: function (plainpassword) {
+// UserSchema.methods = {
+//   autheticate: function (plainpassword) {
     
-    return this.securePassword(plainpassword) === this.encry_password;
-},
+//     return this.securePassword(plainpassword) === this.encry_password;
+// },
 
-securePassword: function (plainpassword) {
-    if (!plainpassword) return "";
-    try {
-      return crypto
-        .createHmac("sha256", this.salt)
-        .update(plainpassword)
-        .digest("hex");
-    } catch (err) {
-      return "";
-    }
-  },
-};
+// securePassword: function (plainpassword) {
+//     if (!plainpassword) return "";
+//     try {
+//       return crypto
+//         .createHmac("sha256", this.salt)
+//         .update(plainpassword)
+//         .digest("hex");
+//     } catch (err) {
+//       return "";
+//     }
+//   },
+// };
 
 module.exports = mongoose.model("User", UserSchema);

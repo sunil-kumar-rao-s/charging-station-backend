@@ -12,8 +12,8 @@ router.get("/", function(req, res, next) {
   res.send("Vechicle Route Called");
 });
 
-router.post("/addvechicle",common.checkAdmin, vechcileController.addVechicle);
-router.post('/getvechiclelist', vechcileController.getVechicleList);
-router.post('/updatevechicle',common.checkAdmin, vechcileController.updateVechicleList);
-router.post('/deletevechicle',common.checkAdmin, vechcileController.deleteVechicle)
+router.post("/addvechicle",common.checkUser, vechcileController.addVechicle);
+router.post('/getvechiclelist',common.checkUser, vechcileController.getVechicleList);
+router.post('/updatevechicle',common.checkUser, vechcileController.updateVechicleList);
+router.post('/deletevechicle',common.checkUser, vechcileController.deleteVechicle);
 module.exports = router;

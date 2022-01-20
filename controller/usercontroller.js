@@ -532,6 +532,7 @@ exports.sendOtp = [
 
 
     } catch (err) {
+      
       res.status(500).json({
         status: false,
         message: "Something went wrong!!!",

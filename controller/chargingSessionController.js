@@ -11,6 +11,7 @@ const showSessionmodel = require("../schema/chargingSession");
 const showAllSessionmodel = require("../schema/chargingSession");
 
 const portModel = require("../schema/charginingport");
+const timeslotModel = require("../schema/timeslots");
 const {
   Mongoose
 } = require("mongoose");
@@ -21,11 +22,12 @@ exports.startSession = [
   sanitizeBody("userId").trim(),
   sanitizeBody("startMeterReading").trim(),
   sanitizeBody("hostId").trim(),
-  sanitizeBody("timer").trim(),
+  sanitizeBody("timelslotid").trim(),
 
   async (req, res) => {
     try {
       const sid = Date.now() + req.body.uid + req.body.userId;
+      const timeslotvalue = await timeslotModel.findById({_id:req.body.timeslotid});      
       const startSession = new chargingSessionModel({
         uid: req.body.uid,
         userId: req.body.userId,
@@ -33,91 +35,66 @@ exports.startSession = [
         startTime: Date.now(),
         sessionId: sid,
         hostId: req.body.hostId,
-        timer: req.body.timer
+        timeslotid: req.body.timeslotid,
+        chargedAmount: timeslotvalue.price
+      });
+
+     
+
+      const userwallet =await userModel.findById({_id:req.body.userId});
+      
+      const updateValue = {
+        currentSessionId: sid,
+        walletAmount: userwallet.walletAmount - timeslotvalue.price
+      };
+      const updateValue1 = {
+        isOnline: "false"
+      };
+
+      portModel.findOneAndUpdate({
+        _id: req.body.uid
+      }, {
+        $set: updateValue1
+      }, (error, doc) => {
+
+      });
+
+      userModel.findOneAndUpdate({
+        _id: req.body.userId
+      },{
+        $set: updateValue
+      }, {
+        new: true
+      }, (error, doc) => {
 
 
       });
 
-      const userData = new userModel({
+      const data = await startSession.save();
 
-        currentSessionId: sid
+     
 
-      })
-
-      try {
-
-        const updateValue = {
-
-          currentSessionId: sid
-        };
-        const updateValue1 = {
-
-          isOnline: "false"
-        };
-      
-
-        portModel.findOneAndUpdate({
-          _id: req.body.uid
-        }, {
-          $set: updateValue1
-        }, (error, doc) => {
-
-         
-
-        });
-
-        userModel.findOneAndUpdate({
-          _id: req.body.userId
-        }, {
-          $set: updateValue
-        }, {
-          new: true
-        }, (error, doc) => {
-
-
-        });
-
-        const data = await startSession.save();
-
-        
-
-
-        res.status(200).json({
-          status: true,
-          data
-        });
-      } catch (err) {
-       
-        res.status(400).json({
-          status: false,
-          message: "Cannot create the session, please try again.."
-        });
-      }
       setTimeout(function(){
-
-        let timerValue = {
-         isOnline:"true"
-        };
-        try {
-          
           portModel.findOneAndUpdate({
             _id: req.body.uid
           }, {
             isOnline: "true"
-          }, (error, doc) => {
-  
-           
-  
+          });  
+          chargingSessionModel.findOneAndUpdate({
+            sessionId: sid
+          },{$set:{
+            isSessionActive: "false"
+          }},function(err,docs){
+            
           });
-         
-         
-        } catch (err) {
-        
-        }
+                
+      },timeslotvalue.time * 10000);
 
+      res.status(200).json({
+        status: true,
+        sessionId:sid
+      });
 
-
-      },req.body.timer);
 
     } catch (err) {
       res.status(400).json({
@@ -142,7 +119,7 @@ exports.endSession = [
 
   async (req, res) => {
     try {
-     
+
 
       const endSession = new chargingSessionModel({
         // uid: req.body.uid,
@@ -241,7 +218,7 @@ exports.showAllUserSessions = [
           userId: req.body.userId
         }, (error, doc) => {
 
-          
+
         });
 
 
@@ -252,7 +229,7 @@ exports.showAllUserSessions = [
         });
 
       } catch (err) {
-       
+
         res.status(400).json({
           status: false,
           message: "inside block error"
@@ -296,7 +273,7 @@ exports.getAllSessions = [
         });
 
       } catch (err) {
-        
+
         res.status(400).json({
           status: false,
           message: "inside block error"
@@ -323,31 +300,31 @@ exports.getChargerdetails = [
   async (req, res) => {
     try {
 
-      let data = await portModel.findOne(
-        {qrId: req.body.qrId});
-        
-          if(data==null){
-            res.status(400).json({
-              status: false,
-              message: "qrId invalid or not found"
-              
-          });
-          }
-          else{
-            res.status(200).json({
-              status: true,
-              message: "success",
-              data
-            
-          });
-          }
-        
-      
+      let data = await portModel.findOne({
+        qrId: req.body.qrId
+      });
 
-     
+      if (data == null) {
+        res.status(400).json({
+          status: false,
+          message: "qrId invalid or not found"
+
+        });
+      } else {
+        res.status(200).json({
+          status: true,
+          message: "success",
+          data
+
+        });
+      }
+
+
+
+
 
     } catch (err) {
-      
+
       res.status(400).json({
         status: false,
         message: "Something went wrong, please check again"

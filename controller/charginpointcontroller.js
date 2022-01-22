@@ -95,7 +95,7 @@ exports.createChargingPoing = [
       landMark: req.body.landMark,
       address: req.body.address,
       businessType: req.body.businessType,
-      businessName: req.body.address,
+      businessName: req.body.businessName,
       businessDescription: req.body.businessDescription,
       isOpen: req.body.isOpen,
       location: location,
@@ -130,7 +130,7 @@ exports.createChargingPoing = [
         }
       }
     } catch (err) {
-      
+      console.log(err);
       res.status(500).json({
         status: false,
         message: "Something went wrong!!!",

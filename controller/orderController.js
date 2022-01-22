@@ -10,8 +10,8 @@ const Payment = require("../schema/payment");
 const Razorpay = require('razorpay');
 
 var instance = new Razorpay({
-  key_id: 'rzp_test_6E8SjivqQhV3be',
-  key_secret: 'eiI39u9wq0z1PgCDnWEFwJr4'
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
 })
 
 exports.createOrder = [

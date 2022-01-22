@@ -7,8 +7,6 @@ const {
 } = require("express-validator/filter");
 const chargingSessionModel = require("../schema/chargingSession");
 const userModel = require("../schema/usermodal");
-const showSessionmodel = require("../schema/chargingSession");
-const showAllSessionmodel = require("../schema/chargingSession");
 
 const portModel = require("../schema/charginingport");
 const timeslotModel = require("../schema/timeslots");
@@ -27,7 +25,9 @@ exports.startSession = [
   async (req, res) => {
     try {
       const sid = Date.now() + req.body.uid + req.body.userId;
-      const timeslotvalue = await timeslotModel.findById({_id:req.body.timeslotid});      
+      const timeslotvalue = await timeslotModel.findById({
+        _id: req.body.timeslotid
+      });
       const startSession = new chargingSessionModel({
         uid: req.body.uid,
         userId: req.body.userId,
@@ -39,10 +39,12 @@ exports.startSession = [
         chargedAmount: timeslotvalue.price
       });
 
-     
 
-      const userwallet =await userModel.findById({_id:req.body.userId});
-      
+
+      const userwallet = await userModel.findById({
+        _id: req.body.userId
+      });
+
       const updateValue = {
         currentSessionId: sid,
         walletAmount: userwallet.walletAmount - timeslotvalue.price
@@ -61,7 +63,7 @@ exports.startSession = [
 
       userModel.findOneAndUpdate({
         _id: req.body.userId
-      },{
+      }, {
         $set: updateValue
       }, {
         new: true
@@ -72,27 +74,32 @@ exports.startSession = [
 
       const data = await startSession.save();
 
-     
 
-      setTimeout(function(){
-          portModel.findOneAndUpdate({
-            _id: req.body.uid
-          }, {
-            isOnline: "true"
-          });  
-          chargingSessionModel.findOneAndUpdate({
-            sessionId: sid
-          },{$set:{
+
+      setTimeout(function () {
+        portModel.findOneAndUpdate({
+          _id: req.body.uid
+        }, {
+          isOnline: "true"
+        }, function (err, docs) {
+
+        });
+        chargingSessionModel.findOneAndUpdate({
+          sessionId: sid
+        }, {
+          $set: {
             isSessionActive: "false"
-          }},function(err,docs){
-            
-          });
-                
-      },timeslotvalue.time * 10000);
+          }
+        }, function (err, docs) {
+
+        });
+
+      }, timeslotvalue.time * 60 * 60 * 1000);
 
       res.status(200).json({
         status: true,
-        sessionId:sid
+        sessionId: sid,
+        timeinseconds:timeslotvalue.time * 60 * 60 * 1000
       });
 
 
@@ -203,44 +210,34 @@ exports.endSession = [
 exports.showAllUserSessions = [
 
   sanitizeBody("userId").trim(),
-
-
   async (req, res) => {
     try {
-      const showsessions = new showSessionmodel({
-        userId: req.body.userId,
+
+      let data = await chargingSessionModel.find({
+        userId: req.body.userId
+      }, (error, doc) => {
+
+        if (error) {
+          res.status(203).json({
+            status: false,
+            message: "No sessions found for this user"
+
+          });
+        } else {
+          res.status(200).json({
+            status: true,
+            message: "Charging sessions listed successfully",
+            sessionsData: doc
+          });
+        }
+
       });
 
-      try {
-
-
-        let data = await showSessionmodel.find({
-          userId: req.body.userId
-        }, (error, doc) => {
-
-
-        });
-
-
-
-        res.status(200).json({
-          status: true,
-          sessionsData: data
-        });
-
-      } catch (err) {
-
-        res.status(400).json({
-          status: false,
-          message: "inside block error"
-
-        });
-      }
-
     } catch (err) {
+      console.log(err);
       res.status(400).json({
         status: false,
-        message: "Cannot create the session, please try again"
+        message: "Internal server error!!!"
       });
 
     }
@@ -249,42 +246,30 @@ exports.showAllUserSessions = [
 ];
 
 exports.getAllSessions = [
-
   sanitizeBody("adminId").trim(),
-
-
   async (req, res) => {
     try {
+      let data = await chargingSessionModel.find({}, (error, doc) => {
 
+        if (error) {
+          res.status(203).json({
+            status: false,
+            message: "No sessions found!!!"
+          });
+        } else {
+          res.status(200).json({
+            status: true,
+            message: "Sessions listed successfully",
+            AllsessionsData: data
+          });
+        }
 
-      try {
-
-
-
-        let data = await showAllSessionmodel.find({}, (error, doc) => {
-
-        });
-
-
-
-        res.status(200).json({
-          status: true,
-          AllsessionsData: data
-        });
-
-      } catch (err) {
-
-        res.status(400).json({
-          status: false,
-          message: "inside block error"
-
-        });
-      }
+      });
 
     } catch (err) {
-      res.status(400).json({
+      res.status(500).json({
         status: false,
-        message: "Cannot create the session, please try again"
+        message: "Internal server error!!!"
       });
 
     }
@@ -328,6 +313,43 @@ exports.getChargerdetails = [
       res.status(400).json({
         status: false,
         message: "Something went wrong, please check again"
+      });
+
+    }
+  }
+
+];
+
+exports.showSessionbyId = [
+
+  sanitizeBody("sessionId").trim(),
+  async (req, res) => {
+    try {
+
+      let data = await chargingSessionModel.find({
+        sessionId: req.body.sessionId
+      }, (error, doc) => {
+
+        if (error) {
+          res.status(203).json({
+            status: false,
+            message: "No sessions found for this ID"
+
+          });
+        } else {
+          res.status(200).json({
+            status: true,
+            message: "Charging session listed successfully",
+            sessionsData: doc
+          });
+        }
+
+      });
+
+    } catch (err) {
+      res.status(400).json({
+        status: false,
+        message: "Internal server error!!!"
       });
 
     }

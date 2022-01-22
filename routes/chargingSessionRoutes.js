@@ -18,4 +18,5 @@ router.get('/', function(req, res, next) {
   router.post('/show_my_session',common.checkUser, chargingSessionController.showAllUserSessions);
   router.post('/show_allusersessions', common.checkAdmin, chargingSessionController.getAllSessions);
   router.post('/getchargerdetails',common.checkUser,chargingSessionController.getChargerdetails);
+  router.post('/showsessionbyid',chargingSessionController.showSessionbyId);
   module.exports = router;

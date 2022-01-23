@@ -271,7 +271,7 @@ exports.getAllSessions = [
           res.status(200).json({
             status: true,
             message: "Sessions listed successfully",
-            AllsessionsData: data
+            AllsessionsData: doc
           });
         }
 
@@ -347,7 +347,7 @@ exports.showSessionbyId = [
             message: "No sessions found for this ID"
 
           });
-        } else {
+        } else {          
           res.status(200).json({
             status: true,
             message: "Charging session listed successfully",

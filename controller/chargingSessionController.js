@@ -47,7 +47,8 @@ exports.startSession = [
 
       const updateValue = {
         currentSessionId: sid,
-        walletAmount: userwallet.walletAmount - timeslotvalue.price
+        walletAmount: userwallet.walletAmount - timeslotvalue.price,
+        isSessionActive:"true"
       };
       const updateValue1 = {
         isOnline: "false"
@@ -86,6 +87,16 @@ exports.startSession = [
         });
         chargingSessionModel.findOneAndUpdate({
           sessionId: sid
+        }, {
+          $set: {
+            isSessionActive: "false"
+          }
+        }, function (err, docs) {
+
+        });
+
+        userModel.findOneAndUpdate({
+          _id: req.body.userId
         }, {
           $set: {
             isSessionActive: "false"

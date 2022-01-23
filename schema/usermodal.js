@@ -17,6 +17,7 @@ const UserSchema = new Schema(
     isVerified: {type:String,default:"false"},
     Key: {type:String,default:"null"},
     salt: String,
+    isSessionActive:{type:String,default:"false"}
 
  //password: String,
     

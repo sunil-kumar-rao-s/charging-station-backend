@@ -110,7 +110,7 @@ exports.startSession = [
       res.status(200).json({
         status: true,
         sessionId: sid,
-        timeinseconds:timeslotvalue.time * 60 * 60 * 1000
+        timeinseconds:timeslotvalue.time * 60 * 60 
       });
 
 

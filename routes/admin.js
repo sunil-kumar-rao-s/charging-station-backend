@@ -40,4 +40,5 @@ router.post("/addstationimages", common.checkAdmin, adminController.addStationIm
 router.post("/addtimeslot", common.checkAdmin, adminController.addTimeSlot);
 router.post("/edittimeslot", common.checkAdmin, adminController.editTimeSlot);
 router.post("/deletetimeslot", common.checkAdmin, adminController.deleteTimeSlot);
+
 module.exports = router;

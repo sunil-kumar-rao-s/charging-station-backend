@@ -32,6 +32,8 @@ const {
   findOne
 } = require("../schema/adminmodel");
 
+const mail = require("./mail")
+
 exports.createAdminUser = [
   sanitizeBody("userName"),
   sanitizeBody("email"),
@@ -1193,3 +1195,4 @@ exports.deleteTimeSlot = [
     }
   }
 ];
+

@@ -1163,6 +1163,13 @@
   dependencies:
     "ci-info" "^2.0.0"
 
+"is-core-module@^2.2.0", "is-core-module@^2.9.0":
+  "integrity" "sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A=="
+  "resolved" "https://registry.npmjs.org/is-core-module/-/is-core-module-2.9.0.tgz"
+  "version" "2.9.0"
+  dependencies:
+    "has" "^1.0.3"
+
 "is-expression@^3.0.0":
   "integrity" "sha1-Oayqa+f9HzRx3ELHQW5hwkMXrJ8="
   "resolved" "https://registry.npmjs.org/is-expression/-/is-expression-3.0.0.tgz"
@@ -1567,6 +1574,11 @@
   "integrity" "sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw=="
   "resolved" "https://registry.npmjs.org/negotiator/-/negotiator-0.6.2.tgz"
   "version" "0.6.2"
+
+"nodemailer@^6.7.2":
+  "integrity" "sha512-Dz7zVwlef4k5R71fdmxwR8Q39fiboGbu3xgswkzGwczUfjp873rVxt1O46+Fh0j1ORnAC6L9+heI8uUpO6DT7Q=="
+  "resolved" "https://registry.npmjs.org/nodemailer/-/nodemailer-6.7.2.tgz"
+  "version" "6.7.2"
 
 "nodemo@^1.0.0":
   "integrity" "sha1-HnJC/yHUPloUtBoVzHJPbjlok/I="

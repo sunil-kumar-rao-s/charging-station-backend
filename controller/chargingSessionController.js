@@ -36,7 +36,8 @@ exports.startSession = [
         sessionId: sid,
         hostId: req.body.hostId,
         timeslotid: req.body.timeslotid,
-        chargedAmount: timeslotvalue.price
+        chargedAmount: timeslotvalue.price,
+        expectedEndTime: Date.now() + (timeslotvalue.time *60*60)
       });
 
 

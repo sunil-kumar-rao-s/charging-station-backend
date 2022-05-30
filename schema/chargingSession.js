@@ -15,7 +15,8 @@ const Charging_SessionSchema = new Schema({
     isSessionActive: { type:String, required: true,default:"True"},
     ratings: { type:String, required: true,default:"0"},
     reviews: { type:String, required: true,default:"no reviews"},
-    timeslotid:{type:String,default:"null"}
+    timeslotid:{type:String,default:"null"},
+    expectedEndTime: { type: String, required: true, default: "not yet received" },
 
 },{
     timestamps:true,

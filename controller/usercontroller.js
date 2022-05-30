@@ -357,8 +357,11 @@ exports.getTranscationDetails = [
 
 exports.getStaticPage = [
   async (req, res) => {
+    console.log(req.body);
     let types = req.body.type;
     switch (req.body.type) {
+
+      
       case "PRIVACY":
         try {
           let data = await Privacy.find({}).sort({
@@ -389,16 +392,19 @@ exports.getStaticPage = [
         break;
       case "TERMS":
         try {
+          
           let data = await Temrs.find({}).sort({
             createdAt: -1
           });
+
+         
           res.status(200).json({
             status: true,
             message: "Terms and conditions listed sucessfully.",
             terms: data[0]
           });
         } catch (err) {
-
+          console.log(err);
         }
         break;
       case "HOWISITWORK":
@@ -412,11 +418,12 @@ exports.getStaticPage = [
             terms: data
           });
         } catch (err) {
-
+          
         }
         break;
       default:
         try {
+          console.log("sadasdsadasdsadasdsaf")
           let data = await Privacy.find({}).sort({
             createdAt: -1
           });

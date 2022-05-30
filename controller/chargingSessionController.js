@@ -338,7 +338,7 @@ exports.showSessionbyId = [
   async (req, res) => {
     try {
 
-      let data = await chargingSessionModel.find({
+      let data = await chargingSessionModel.findOne({
         sessionId: req.body.sessionId
       }, (error, doc) => {
 

@@ -352,7 +352,8 @@ exports.showSessionbyId = [
           res.status(200).json({
             status: true,
             message: "Charging session listed successfully",
-            sessionsData: doc
+            sessionsData: doc,
+            servertime:Date.now()
           });
         }
 

@@ -26,6 +26,7 @@ router.post('/sendotpforgetpassword',common.checkUser,useController.sendOtp);
 router.post('/otpauth',useController.otpAuth);
 router.post('/forgotpassword',common.checkUser, useController.forgotPassword);
 router.post('/otpvalidateforgetpass',common.checkUser,useController.otpAuth2);
+router.get('/getcurrenttime', useController.getcurrenttime);
 
 
 

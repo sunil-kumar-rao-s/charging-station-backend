@@ -687,3 +687,24 @@ exports.otpAuth2 = [
   }
 ];
 
+exports.getcurrenttime = [
+ 
+  async (req, res) => {
+    try {
+
+      res.status(200).json({
+        status: true,
+        message: "Something went wrong!!!",
+        currentdate: Date.now()
+      });
+     
+
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        message: "Something went wrong!!!",
+        error: err
+      });
+    }
+  }
+];
